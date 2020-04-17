@@ -61,9 +61,19 @@ public class UserManagementController {
     }
 
     @DeleteMapping("/delete-user-by-id")
-    public String deleteUserById(@RequestParam("id") Integer id) {
+    public String deleteUserById(@RequestParam("id") Integer id,
+                                 @RequestParam("fieldName") String fileName,
+                                 @RequestParam("fieldValue") Integer fieldValue) {
         String s1 = remoteClient.deleteUserById(id);
-        String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId", String.valueOf(id));
+        List<UserAndRole> userId = urRemoteClient.selectUserRoleByFieldNameAndValue(fileName, fieldValue);
+        System.out.println(userId.size());
+        StringBuilder s2 = new StringBuilder();
+        for (UserAndRole ur1 : userId) {
+            System.out.println(ur1);
+            String s = urRemoteClient.deleteUserRoleByFieldNameAndValue(fileName, fieldValue);
+            System.out.println(s);
+            s2.append(s);
+        }
         return "UserManagement表：" + s1 + "," + "关联表" + s2;
     }
 
@@ -74,14 +84,15 @@ public class UserManagementController {
         for (UserManagement userManagement : userManagements) {
             int userId = userManagement.getId();
             String s1 = remoteClient.deleteUserByFieldNameAndValue(fieldName, fieldValue);
-            String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId", String.valueOf(userId));
+            String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId", userId);
             return "UserManagement表：" + s1 + "," + "关联表" + s2;
         }
         return null;
     }
 
     @PutMapping("/update-user-by-id")
-    public String updateUserById(@RequestBody UserEncapsulation1 u1) {Integer id = u1.getId();
+    public String updateUserById(@RequestBody UserEncapsulation1 u1) {
+        Integer id = u1.getId();
         String name = u1.getName();
         String email = u1.getEmail();
         String phone = u1.getPhone();

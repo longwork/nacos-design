@@ -37,7 +37,7 @@ public interface UserAndRoleRemoteClient {
      */
     @GetMapping("/select-user-role-by-fieldname-and-fieldvalue")
     List<UserAndRole> selectUserRoleByFieldNameAndValue(@RequestParam("fieldName") String fieldName,
-                                                        @RequestParam("fieldValue") String fieldValue);
+                                                        @RequestParam("fieldValue") Integer fieldValue);
 
     /**
      * 插入数据
@@ -64,9 +64,9 @@ public interface UserAndRoleRemoteClient {
      * @param fieldValue 字段名
      * @return 返回结果字符串
      */
-    @DeleteMapping("/deleteURByFieldNameAndValue")
+    @DeleteMapping("/delete-user-role-by-fieldname-and-fieldvalue")
     String deleteUserRoleByFieldNameAndValue(@RequestParam("fieldName") String fieldName,
-                                             @RequestParam("fieldValue") String fieldValue);
+                                             @RequestParam("fieldValue") Integer fieldValue);
 
     /**
      * 通过Id修改数据

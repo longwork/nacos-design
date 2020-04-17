@@ -30,7 +30,7 @@ public class UserAndRoleServiceImpl implements UserAndRoleService {
     }
 
     @Override
-    public List<UserAndRole> selectUserRoleByFieldNameAndValue(String fieldName, String fieldValue) {
+    public List<UserAndRole> selectUserRoleByFieldNameAndValue(String fieldName, Integer fieldValue) {
         return urMapper.selectList(
                 new QueryWrapper<UserAndRole>().eq(fieldName, fieldValue)
         );
@@ -60,7 +60,7 @@ public class UserAndRoleServiceImpl implements UserAndRoleService {
     }
 
     @Override
-    public String deleteUserRoleByFieldNameAndValue(String fieldName, String fieldValue) {
+    public String deleteUserRoleByFieldNameAndValue(String fieldName, Integer fieldValue) {
         //先进行查询是否存在
         List<UserAndRole> userAndRoles = selectUserRoleByFieldNameAndValue(fieldName, fieldValue);
         //如果不存在，则不进行删除
@@ -79,8 +79,6 @@ public class UserAndRoleServiceImpl implements UserAndRoleService {
     @Override
     public String updateUserRole(UserAndRole ur) {
         Integer id = ur.getId();
-        Integer userId = ur.getUserId();
-        Integer roleId = ur.getRoleId();
         if (selectUserRoleById(id) == null) {
             if (idDetection(id)) {
                 return "ID主键唯一，请换一个ID";

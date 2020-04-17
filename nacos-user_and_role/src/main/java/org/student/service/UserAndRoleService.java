@@ -30,7 +30,7 @@ public interface UserAndRoleService {
      * @param fieldValue 字段值
      * @return 返回通过fieldName和fieldValue值查询的RoleManagement
      */
-    List<UserAndRole> selectUserRoleByFieldNameAndValue(String fieldName, String fieldValue);
+    List<UserAndRole> selectUserRoleByFieldNameAndValue(String fieldName, Integer fieldValue);
 
     /**
      * 插入数据
@@ -55,7 +55,7 @@ public interface UserAndRoleService {
      * @param fieldValue 字段名
      * @return 返回结果的字符串
      */
-    String deleteUserRoleByFieldNameAndValue(String fieldName, String fieldValue);
+    String deleteUserRoleByFieldNameAndValue(String fieldName, Integer fieldValue);
 
     /**
      * 通过Id修改数据

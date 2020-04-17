@@ -22,7 +22,7 @@ public class UserAndRoleRemoteHystrix implements UserAndRoleRemoteClient {
     }
 
     @Override
-    public List<UserAndRole> selectUserRoleByFieldNameAndValue(String fieldName, String fieldValue) {
+    public List<UserAndRole> selectUserRoleByFieldNameAndValue(String fieldName, Integer fieldValue) {
         return null;
     }
 
@@ -37,7 +37,7 @@ public class UserAndRoleRemoteHystrix implements UserAndRoleRemoteClient {
     }
 
     @Override
-    public String deleteUserRoleByFieldNameAndValue(String fieldName, String fieldValue) {
+    public String deleteUserRoleByFieldNameAndValue(String fieldName, Integer fieldValue) {
         return null;
     }
 

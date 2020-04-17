@@ -48,7 +48,7 @@ public class RoleManagementController {
     @DeleteMapping("/delete-role")
     public String deleteRole(@RequestParam("id") Integer id) {
         String s1 = remoteClient.deleteRole(id);
-        String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId", String.valueOf(id));
+        String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId", id);
         return "RoleManagement表：" + s1 + "," + "关联表" + s2;
     }
 
@@ -58,7 +58,7 @@ public class RoleManagementController {
         RoleManagement roleManagement = remoteClient.selectRoleByFieldNameAndValue(fieldName, fieldValue);
         int roleId = roleManagement.getId();
         String s1 = remoteClient.deleteRoleByFieldNameAndValue(fieldName, fieldValue);
-        String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId", String.valueOf(roleId));
+        String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId", roleId);
         return "RoleManagement表：" + s1 + "," + "关联表" + s2;
     }
 

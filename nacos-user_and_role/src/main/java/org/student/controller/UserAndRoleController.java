@@ -29,7 +29,7 @@ public class UserAndRoleController {
 
     @GetMapping("/select-user-role-by-fieldname-and-fieldvalue")
     public List<UserAndRole> selectUserRoleByFieldNameAndValue(@RequestParam("fieldName") String fieldName,
-                                                               @RequestParam("fieldValue") String fieldValue) {
+                                                               @RequestParam("fieldValue") Integer fieldValue) {
         return urService.selectUserRoleByFieldNameAndValue(fieldName, fieldValue);
     }
 
@@ -45,7 +45,7 @@ public class UserAndRoleController {
 
     @DeleteMapping("/delete-user-role-by-fieldname-and-fieldvalue")
     public String deleteUserRoleByFieldNameAndValue(@RequestParam("fieldName") String fieldName,
-                                                    @RequestParam("fieldValue") String fieldValue) {
+                                                    @RequestParam("fieldValue") Integer fieldValue) {
         return urService.deleteUserRoleByFieldNameAndValue(fieldName, fieldValue);
     }
 
