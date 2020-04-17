@@ -1,0 +1,6 @@
+org\student\entity\rolemanagement.class
+org\student\mapper\RoleManagementMapper.class
+org\student\NacosRolemanagementApplication.class
+org\student\dao\RoleManagementDao.class
+org\student\server\RoleManagementServer.class
+org\student\controller\RoleManagementController.class
