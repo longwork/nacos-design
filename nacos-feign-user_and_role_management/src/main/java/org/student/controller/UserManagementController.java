@@ -49,8 +49,8 @@ public class UserManagementController {
         Date date = u1.getDate();
         List<Integer> roleIdList = u1.getRoleIdList();
         StringBuilder s2 = new StringBuilder();
-        List<UserManagement> userManagements = remoteClient.selectAllUserList();
-        int size = userManagements.size();
+        List<UserAndRole> userAndRoles = urRemoteClient.selectAllUserRoleList();
+        int size = userAndRoles.size();
         UserEncapsulation u = new UserEncapsulation(id, name, email, phone, date);
         for (Integer integer : roleIdList) {
             UserAndRole ur = new UserAndRole(++size, id, integer);
