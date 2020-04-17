@@ -121,7 +121,7 @@ public class UserManagementServiceImpl implements UserManagementService {
             return "数据不存在，删除失败";
         } else {
             int delete = userMapper.deleteById(id);
-            return delete == 1 ? "删除成功" : "删除失败";
+            return delete > 0 ? "删除成功" : "删除失败";
         }
     }
 
@@ -146,7 +146,7 @@ public class UserManagementServiceImpl implements UserManagementService {
             map.put(fieldName, fieldValue);
             int delete = userMapper.deleteByMap(map);
             //如果删除成功就返回1，失败返回0
-            return delete == 1 ? "删除成功" : "删除失败";
+            return delete > 0 ? "删除成功" : "删除失败";
         }
     }
 

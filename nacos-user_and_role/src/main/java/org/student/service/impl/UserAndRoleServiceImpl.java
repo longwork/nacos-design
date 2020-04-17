@@ -55,7 +55,7 @@ public class UserAndRoleServiceImpl implements UserAndRoleService {
             return "数据不存在，删除失败";
         } else {
             int delete = urMapper.deleteById(id);
-            return delete == 1 ? "删除成功" : "删除失败";
+            return delete > 0 ? "删除成功" : "删除失败";
         }
     }
 
@@ -72,7 +72,7 @@ public class UserAndRoleServiceImpl implements UserAndRoleService {
             map.put(fieldName, fieldValue);
             int delete = urMapper.deleteByMap(map);
             //如果删除成功就返回1，失败返回0
-            return delete == 1 ? "删除成功" : "删除失败";
+            return delete > 0 ? "删除成功" : "删除失败";
         }
     }
 
@@ -84,13 +84,10 @@ public class UserAndRoleServiceImpl implements UserAndRoleService {
                 return "ID主键唯一，请换一个ID";
             }
             int insert = urMapper.insert(ur);
-            return insert == 1 ? "数据不存在，已插入" : "插入失败";
+            return insert > 0 ? "数据不存在，已插入" : "插入失败";
         } else {
-            if (idDetection(id)) {
-                return "ID主键唯一，请换一个ID";
-            }
             int update = urMapper.updateById(ur);
-            return update == 1 ? "修改成功" : "修改失败";
+            return update > 0 ? "修改成功" : "修改失败";
         }
     }
 

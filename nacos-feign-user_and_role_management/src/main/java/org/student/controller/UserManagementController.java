@@ -65,29 +65,25 @@ public class UserManagementController {
                                  @RequestParam("fieldName") String fileName,
                                  @RequestParam("fieldValue") Integer fieldValue) {
         String s1 = remoteClient.deleteUserById(id);
-        List<UserAndRole> userId = urRemoteClient.selectUserRoleByFieldNameAndValue(fileName, fieldValue);
-        System.out.println(userId.size());
-        StringBuilder s2 = new StringBuilder();
-        for (UserAndRole ur1 : userId) {
-            System.out.println(ur1);
-            String s = urRemoteClient.deleteUserRoleByFieldNameAndValue(fileName, fieldValue);
-            System.out.println(s);
-            s2.append(s);
-        }
-        return "UserManagement表：" + s1 + "," + "关联表" + s2;
+        String s = urRemoteClient.deleteUserRoleByFieldNameAndValue(fileName, fieldValue);
+        return "UserManagement表：" + s1 + "," + "关联表" + s;
     }
 
     @DeleteMapping("/delete-user-by-fieldname-and-fieldvalue")
     public String deleteUserByFieldNameAndValue(@RequestParam("fieldName") String fieldName,
                                                 @RequestParam("fieldValue") String fieldValue) {
         List<UserManagement> userManagements = remoteClient.selectUserByFileNameAndValue(fieldName, fieldValue);
+        if (userManagements == null) {
+            return "数据库没有这个值";
+        }
+        String s1 = null;
+        String s2 = null;
         for (UserManagement userManagement : userManagements) {
             int userId = userManagement.getId();
-            String s1 = remoteClient.deleteUserByFieldNameAndValue(fieldName, fieldValue);
-            String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId", userId);
-            return "UserManagement表：" + s1 + "," + "关联表" + s2;
+            s1 = remoteClient.deleteUserByFieldNameAndValue(fieldName, fieldValue);
+            s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId", userId);
         }
-        return null;
+        return "UserManagement表：" + s1 + "," + "关联表" + s2;
     }
 
     @PutMapping("/update-user-by-id")
@@ -98,14 +94,15 @@ public class UserManagementController {
         String phone = u1.getPhone();
         Date date = u1.getDate();
         List<Integer> roleIdList = u1.getRoleIdList();
-        StringBuilder s2 = new StringBuilder();
-        List<UserManagement> userManagements = remoteClient.selectAllUserList();
-        int size = userManagements.size();
+
         UserEncapsulation u = new UserEncapsulation(id, name, email, phone, date);
         String s1 = remoteClient.updateUserById(u);
+        StringBuilder s2 = new StringBuilder();
+        List<UserAndRole> userAndRoleList = urRemoteClient.selectUserRoleByFieldNameAndValue("userId", id);
+        int i = 0;
         for (Integer integer : roleIdList) {
-            UserAndRole ur = new UserAndRole(++size, id, integer);
-            s2.append(urRemoteClient.insertUserRole(ur));
+            UserAndRole ur = new UserAndRole(userAndRoleList.get(i++).getId(), id, integer);
+            s2.append(urRemoteClient.updateUserRole(ur));
         }
         return "UserManagement表：" + s1 + "," + "关联表" + s2;
     }
