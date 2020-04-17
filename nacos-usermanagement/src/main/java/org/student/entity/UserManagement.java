@@ -1,5 +1,6 @@
 package org.student.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -7,8 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Past;
 import java.time.LocalDate;
 
 /**
@@ -19,16 +18,21 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @TableName("usermanagement")
 public class UserManagement {
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer id;
     @TableField(value = "name")
     private String name;
     @TableField(value = "email")
-    @Email
     private String email;
     @TableField(value = "phone")
     private String phone;
-    @Past
     @TableId(value = "birth")
     private LocalDate birth;
+
+    public UserManagement(String name, String email, String phone, LocalDate birth) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.birth = birth;
+    }
 }

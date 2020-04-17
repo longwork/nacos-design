@@ -2,6 +2,7 @@ package org.student.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.stereotype.Service;
+import org.student.dto.UserAndRoleEncapsulation;
 import org.student.entity.UserAndRole;
 import org.student.mapper.UserAndRoleMapper;
 import org.student.service.UserAndRoleService;
@@ -37,13 +38,12 @@ public class UserAndRoleServiceImpl implements UserAndRoleService {
     }
 
     @Override
-    public String insertUserRole(UserAndRole ur) {
-        Integer id = ur.getId();
-        if (idDetection(id)) {
-            return "ID主键唯一，请换一个ID";
-        }
-        int insert = urMapper.insert(ur);
-        return insert == 1 ? "插入成功" : "插入失败";
+    public String insertUserRole(UserAndRoleEncapsulation ur) {
+        Integer userId = ur.getUserId();
+        Integer roleId = ur.getRoleId();
+        UserAndRole u = new UserAndRole(userId, roleId);
+        int insert = urMapper.insert(u);
+        return insert > 0 ? "插入成功" : "插入失败";
     }
 
     @Override
@@ -80,20 +80,10 @@ public class UserAndRoleServiceImpl implements UserAndRoleService {
     public String updateUserRole(UserAndRole ur) {
         Integer id = ur.getId();
         if (selectUserRoleById(id) == null) {
-            if (idDetection(id)) {
-                return "ID主键唯一，请换一个ID";
-            }
-            int insert = urMapper.insert(ur);
-            return insert > 0 ? "数据不存在，已插入" : "插入失败";
+            return "数据不存在，修改失败";
         } else {
             int update = urMapper.updateById(ur);
             return update > 0 ? "修改成功" : "修改失败";
         }
-    }
-
-    @Override
-    public boolean idDetection(Integer id) {
-        UserAndRole userAndRole = selectUserRoleById(id);
-        return userAndRole != null;
     }
 }

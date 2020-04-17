@@ -1,5 +1,6 @@
 package org.student.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -15,10 +16,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName("rolemanagement")
 public class RoleManagement {
-    @TableId
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     @TableField("rolename")
     private String roleName;
     @TableField("roledescribe")
-    protected String roleDescribe;
+    private String roleDescribe;
+
+    public RoleManagement(String roleName, String roleDescribe) {
+        this.roleName = roleName;
+        this.roleDescribe = roleDescribe;
+    }
 }

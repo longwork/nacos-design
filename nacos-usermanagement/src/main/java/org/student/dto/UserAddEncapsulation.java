@@ -1,10 +1,10 @@
-package org.student.entity;
+package org.student.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * @author Administrator
@@ -12,11 +12,9 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Result {
-    private int id;
+public class UserAddEncapsulation {
     private String name;
     private String email;
     private String phone;
-    private LocalDate birth;
-    private String roleName;
+    private Date date;
 }

@@ -2,6 +2,7 @@ package org.student.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.student.dto.RoleAddEncapsulation;
 import org.student.entity.RoleManagement;
 import org.student.service.RoleManagementService;
 
@@ -13,9 +14,6 @@ import java.util.List;
  */
 @RestController
 public class RoleManagementController {
-
-    private static final int OK = 1001;
-
     @Value("${nacos.config}")
     String config;
 
@@ -73,7 +71,7 @@ public class RoleManagementController {
      * @return 是否成功
      */
     @PostMapping("/insert-role")
-    public String insertRole(@RequestBody RoleManagement role) {
+    public String insertRole(@RequestBody RoleAddEncapsulation role) {
         return roleService.insertRole(role);
     }
 

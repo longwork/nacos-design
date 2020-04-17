@@ -2,6 +2,7 @@ package org.student.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+import org.student.dto.UserAndRoleAddEncapsulation;
 import org.student.entity.UserAndRole;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public interface UserAndRoleRemoteClient {
      * @return 返回结果字符串
      */
     @PostMapping("/insert-user-role")
-    String insertUserRole(@RequestBody UserAndRole ur);
+    String insertUserRole(@RequestBody UserAndRoleAddEncapsulation ur);
 
     /**
      * 通过ID删除数据

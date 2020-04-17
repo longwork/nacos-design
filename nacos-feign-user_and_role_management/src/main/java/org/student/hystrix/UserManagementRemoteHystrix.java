@@ -2,7 +2,8 @@ package org.student.hystrix;
 
 import org.springframework.stereotype.Component;
 import org.student.client.UserManagementRemoteClient;
-import org.student.entity.UserEncapsulation;
+import org.student.dto.UserAddEncapsulation;
+import org.student.dto.UserUpdateEncapsulation;
 import org.student.entity.UserManagement;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class UserManagementRemoteHystrix implements UserManagementRemoteClient {
 
     @SuppressWarnings("SpringMVCViewInspection")
     @Override
-    public String insertUser(UserEncapsulation u) {
+    public String insertUser(UserAddEncapsulation u) {
         return "请求超时！";
     }
 
@@ -54,7 +55,7 @@ public class UserManagementRemoteHystrix implements UserManagementRemoteClient {
 
     @SuppressWarnings("SpringMVCViewInspection")
     @Override
-    public String updateUserById(UserEncapsulation u) {
+    public String updateUserById(UserUpdateEncapsulation u) {
         return "请求超时！";
     }
 

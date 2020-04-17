@@ -3,6 +3,9 @@ package org.student.controller;
 import org.springframework.web.bind.annotation.*;
 import org.student.client.RoleManagementRemoteClient;
 import org.student.client.UserAndRoleRemoteClient;
+import org.student.dto.RoleAddEncapsulation;
+import org.student.dto.RoleUpdateEncapsulation;
+import org.student.dto.UserAndRoleAddEncapsulation;
 import org.student.entity.RoleManagement;
 import org.student.entity.UserAndRole;
 
@@ -38,10 +41,20 @@ public class RoleManagementController {
     }
 
     @PostMapping("/insert-role")
-    public String insertRole(@RequestBody RoleManagement role,
-                             @RequestBody UserAndRole ur) {
+    public String insertRole(@RequestBody RoleAddEncapsulation re) {
+        String roleName = re.getRoleName();
+        String roleDescribe = re.getRoleDescribe();
+        List<Integer> userId = re.getUserId();
+        RoleManagement role = new RoleManagement(roleName, roleDescribe);
         String s1 = remoteClient.insertRole(role);
-        String s2 = urRemoteClient.insertUserRole(ur);
+        String s2 = null;
+        for (Integer integer : userId) {
+            RoleManagement r = remoteClient.selectRoleByFieldNameAndValue("fieldName", roleName);
+            UserAndRoleAddEncapsulation ur = new UserAndRoleAddEncapsulation(integer, r.getId());
+            s2 = urRemoteClient.insertUserRole(ur);
+        }
+
+
         return "RoleManagement表：" + s1 + "," + "关联表" + s2;
     }
 
@@ -63,10 +76,20 @@ public class RoleManagementController {
     }
 
     @PutMapping("/update-role-by-id")
-    public String updateRoleById(@RequestBody RoleManagement role,
-                                 @RequestBody UserAndRole ur) {
-        String s1 = remoteClient.updateRoleById(role);
-        String s2 = urRemoteClient.updateUserRole(ur);
+    public String updateRoleById(@RequestBody RoleUpdateEncapsulation role) {
+        Integer roleId = role.getRoleId();
+        String roleName = role.getRoleName();
+        String roleDescribe = role.getRoleDescribe();
+        List<Integer> userId = role.getUserId();
+        RoleManagement r = new RoleManagement(roleId, roleName, roleDescribe);
+        String s1 = remoteClient.updateRoleById(r);
+        String s2 = null;
+        int i = 0;
+        for (Integer integer : userId) {
+            List<UserAndRole> userId1 = urRemoteClient.selectUserRoleByFieldNameAndValue("userId", integer);
+            UserAndRole ur = new UserAndRole(userId1.get(i++).getId(),integer,roleId);
+            s2 = urRemoteClient.updateUserRole(ur);
+        }
         return "RoleManagement表：" + s1 + "," + "关联表" + s2;
     }
 }

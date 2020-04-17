@@ -2,6 +2,7 @@ package org.student.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.stereotype.Service;
+import org.student.dto.RoleAddEncapsulation;
 import org.student.entity.RoleManagement;
 import org.student.mapper.RoleManagementMapper;
 import org.student.service.RoleManagementService;
@@ -63,26 +64,26 @@ public class RoleManagementServerImpl implements RoleManagementService {
      * 插入数据
      *
      * @param role 想要插入的Role
-     * @return 返回数值(1代表插入成功, 0代表插入失败, 1001代表修改成功, 1000代表修改失败, - 1代表不做任何动作算作插入失败)
+     * @return 返回结果字符串
      */
     @Override
-    public String insertRole(RoleManagement role) {
-        Integer id = role.getId();
+    public String insertRole(RoleAddEncapsulation role) {
         String roleName = role.getRoleName();
         String roleDescribe = role.getRoleDescribe();
-        String detection = detection(id, roleName, roleDescribe);
+        String detection = detection(roleName, roleDescribe);
         if (detection != null) {
             return detection;
         }
-        int insert = roleMapper.insert(role);
-        return insert == 1 ? "插入成功" : "插入失败";
+        RoleManagement r = new RoleManagement(roleName, roleDescribe);
+        int insert = roleMapper.insert(r);
+        return insert > 0 ? "插入成功" : "插入失败";
     }
 
     /**
      * 通过ID删除数据
      *
      * @param id 传入的主键ID
-     * @return 返回数值(1代表成功, 0代表失败, - 1代表不存在算删除失败)
+     * @return 返回结果字符串
      */
     @Override
     public String deleteRole(Integer id) {
@@ -93,7 +94,7 @@ public class RoleManagementServerImpl implements RoleManagementService {
             return "数据不存在，删除失败";
         } else {
             int delete = roleMapper.deleteById(id);
-            return delete == 1 ? "删除成功" : "删除失败";
+            return delete > 0 ? "删除成功" : "删除失败";
         }
     }
 
@@ -102,7 +103,7 @@ public class RoleManagementServerImpl implements RoleManagementService {
      *
      * @param fieldName  字段值
      * @param fieldValue 字段名
-     * @return 返回数值(1代表成功, 0代表失败, - 1代表不存在算删除失败)
+     * @return 返回结果字符串
      */
     @Override
     public String deleteRoleByFieldNameAndValue(String fieldName, String fieldValue) {
@@ -117,7 +118,7 @@ public class RoleManagementServerImpl implements RoleManagementService {
             map.put(fieldName, fieldValue);
             int delete = roleMapper.deleteByMap(map);
             //如果删除成功就返回1，失败返回0
-            return delete == 1 ? "删除成功" : "删除失败";
+            return delete > 0 ? "删除成功" : "删除失败";
         }
     }
 
@@ -125,40 +126,23 @@ public class RoleManagementServerImpl implements RoleManagementService {
      * 通过Id修改数据
      *
      * @param role 要更新的Role
-     * @return 返回数值(1代表修改成功, 0代表修改失败, 1001代表插入成功, 1000插入失败, - 1不做任何修改算修改失败)
+     * @return 返回结果字符串
      */
     @Override
     public String updateRoleById(RoleManagement role) {
         Integer id = role.getId();
         String roleName = role.getRoleName();
         String roleDescribe = role.getRoleDescribe();
-        if (selectRoleById(id)==null){
-            String detection = updateDetection(id, roleName, roleDescribe);
-            if (detection != null) {
-                return detection;
-            }
-            int insert = roleMapper.insert(role);
-            return insert == 1 ? "数据不存在，已插入" : "插入失败";
+        if (selectRoleById(id) == null) {
+            return "数据不存在,修改失败";
         } else {
             String updateDetection = updateDetection(id, roleName, roleDescribe);
             if (updateDetection != null) {
                 return updateDetection;
             }
             int update = roleMapper.updateById(role);
-            return update == 1 ? "修改成功" : "修改失败";
+            return update > 0 ? "修改成功" : "修改失败";
         }
-    }
-
-    /**
-     * 检测Id重复
-     *
-     * @param id 传入的id
-     * @return true重复，false不重复
-     */
-    @Override
-    public boolean idDetection(Integer id) {
-        RoleManagement roleManagement = selectRoleById(id);
-        return roleManagement != null;
     }
 
     /**
@@ -196,16 +180,12 @@ public class RoleManagementServerImpl implements RoleManagementService {
     /**
      * 检测属性合格
      *
-     * @param id           传入的id
      * @param roleName     传入的roleName
      * @param roleDescribe 传入的roleDescribe
      * @return 返回不符合的语句
      */
     @Override
-    public String detection(Integer id, String roleName, String roleDescribe) {
-        if (idDetection(id)) {
-            return "ID主键唯一，请换一个ID";
-        }
+    public String detection(String roleName, String roleDescribe) {
         if (roleNameDetection(roleName)) {
             return "角色名格式不对";
         }
@@ -224,15 +204,14 @@ public class RoleManagementServerImpl implements RoleManagementService {
     @Override
     public String updateDetection(Integer id, String roleName, String roleDescribe) {
         RoleManagement r = selectRoleById(id);
-        RoleManagement roleName1 = selectRoleByFieldNameAndValue("roleName", roleName);
-        RoleManagement roleDescribe1 = selectRoleByFieldNameAndValue("roleDescribe", roleDescribe);
-        if (roleName1 != null && !roleName1.getRoleName().equals(r.getRoleName())) {
+
+        if (roleNameRepetition(roleName) && !roleName.equals(r.getRoleName())) {
             return "角色名已存在";
         }
         if (roleDescribe.length() > ROLE_DESCRIBE_LENGTH) {
             return "角色描述太长";
         }
-        if (roleDescribe1 != null && !roleDescribe1.getRoleDescribe().equals(r.getRoleDescribe())) {
+        if (roleDescribeRepetition(roleDescribe) && !roleDescribe.equals(r.getRoleDescribe())) {
             return "描述已存在";
         }
         return null;

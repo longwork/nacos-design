@@ -2,7 +2,8 @@ package org.student.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.stereotype.Service;
-import org.student.entity.UserEncapsulation;
+import org.student.dto.UserAddEncapsulation;
+import org.student.dto.UserUpdateEncapsulation;
 import org.student.entity.UserManagement;
 import org.student.mapper.UserManagementMapper;
 import org.student.service.UserManagementService;
@@ -90,20 +91,19 @@ public class UserManagementServiceImpl implements UserManagementService {
      * @return 返回结果的字符串
      */
     @Override
-    public String insertUser(UserEncapsulation u) {
-        Integer id = u.getId();
+    public String insertUser(UserAddEncapsulation u) {
         String name = u.getName();
         String email = u.getEmail();
         String phone = u.getPhone();
         Date date = u.getDate();
         LocalDate localDate = dateTimeFormat(date);
-        String detection = detection(id, name, email, phone, localDate);
+        String detection = detection(name, email, phone, localDate);
         if (detection != null) {
             return detection;
         }
-        UserManagement user = new UserManagement(id, name, email, phone, localDate);
+        UserManagement user = new UserManagement(name, email, phone, localDate);
         int insert = userMapper.insert(user);
-        return insert == 1 ? "插入成功" : "插入失败";
+        return insert > 0 ? "插入成功" : "插入失败";
     }
 
     /**
@@ -157,7 +157,7 @@ public class UserManagementServiceImpl implements UserManagementService {
      * @return 返回数值(1代表修改成功, 0代表修改失败)
      */
     @Override
-    public String updateUserById(UserEncapsulation u) {
+    public String updateUserById(UserUpdateEncapsulation u) {
         Integer id = u.getId();
         String name = u.getName();
         String email = u.getEmail();
@@ -165,13 +165,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         Date date = u.getDate();
         LocalDate localDate = dateTimeFormat(date);
         if (selectUserById(id) == null) {
-            String detection = detection(id, name, email, phone, localDate);
-            if (detection != null) {
-                return detection;
-            }
-            UserManagement user = new UserManagement(id, name, email, phone, localDate);
-            int insert = userMapper.insert(user);
-            return insert == 1 ? "数据不存在，已插入" : "插入失败";
+            return "数据不存在，修改失败";
         } else {
             String updateDetection = updateDetection(id, name, email, phone, localDate);
             if (updateDetection != null) {
@@ -179,20 +173,8 @@ public class UserManagementServiceImpl implements UserManagementService {
             }
             UserManagement user = new UserManagement(id, name, email, phone, localDate);
             int update = userMapper.updateById(user);
-            return update == 1 ? "修改成功" : "修改失败";
+            return update > 1 ? "修改成功" : "修改失败";
         }
-    }
-
-    /**
-     * 检测Id重复
-     *
-     * @param id 传入的id
-     * @return true重复，false不重复
-     */
-    @Override
-    public boolean idDetection(Integer id) {
-        UserManagement userManagement = selectUserById(id);
-        return userManagement != null;
     }
 
     /**
@@ -300,7 +282,6 @@ public class UserManagementServiceImpl implements UserManagementService {
     /**
      * 检测数据是否合格
      *
-     * @param id        传入的id
      * @param name      传入的name
      * @param email     传入的email
      * @param phone     传入的phone
@@ -308,10 +289,7 @@ public class UserManagementServiceImpl implements UserManagementService {
      * @return 返回不符合的语句
      */
     @Override
-    public String detection(Integer id, String name, String email, String phone, LocalDate localDate) {
-        if (idDetection(id)) {
-            return "ID主键唯一，请换一个ID";
-        }
+    public String detection(String name, String email, String phone, LocalDate localDate) {
         if (nameDetection(name)) {
             return "姓名格式不能用特殊符号开头";
         }
@@ -351,30 +329,26 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Override
     public String updateDetection(Integer id, String name, String email, String phone, LocalDate localDate) {
         UserManagement u = selectUserById(id);
-        List<UserManagement> name1 = selectUserByFileNameAndValue("name", name);
-        List<UserManagement> email1 = selectUserByFileNameAndValue("email", email);
-        List<UserManagement> phone1 = selectUserByFileNameAndValue("phone", phone);
-
-        if (!name1.isEmpty() && !name1.get(0).getName().equals(u.getName())) {
-            return "姓名已存在";
-        }
         if (name.length() > NAME_LENGTH) {
             return "姓名长度太长";
         }
         if (nameDetection(name)) {
             return "姓名格式不能用特殊符号开头";
         }
-        if (!email.isEmpty() && !email1.get(0).getEmail().equals(u.getEmail())) {
-            return "邮箱已存在";
+        if (nameRepetition(name) && !name.equals(u.getName())) {
+            return "姓名已存在";
         }
         if (emailDetection(email)) {
             return "邮箱格式不对";
         }
-        if (!phone1.isEmpty() && !phone1.get(0).getPhone().equals(u.getPhone())) {
-            return "手机号码重复";
+        if (emailRepetition(email) && !email.equals(u.getEmail())) {
+            return "邮箱已存在";
         }
         if (phoneDetection(phone)) {
             return "手机号码格式不对";
+        }
+        if (phoneRepetition(phone) && !phone.equals(u.getPhone())) {
+            return "手机号码重复";
         }
         if (birthDetection(localDate)) {
             return "输入的生日超过当前时间";

@@ -1,4 +1,4 @@
-package org.student.entity;
+package org.student.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEncapsulation {
+public class UserUpdateEncapsulation {
     private Integer id;
     private String name;
     private String email;

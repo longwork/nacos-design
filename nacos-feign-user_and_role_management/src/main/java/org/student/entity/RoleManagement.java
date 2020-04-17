@@ -13,5 +13,10 @@ import lombok.NoArgsConstructor;
 public class RoleManagement {
     private int id;
     private String roleName;
-    protected String roleDescribe;
+    private String roleDescribe;
+
+    public RoleManagement(String roleName, String roleDescribe) {
+        this.roleName = roleName;
+        this.roleDescribe = roleDescribe;
+    }
 }

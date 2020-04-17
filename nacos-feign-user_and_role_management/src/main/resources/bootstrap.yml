@@ -13,6 +13,3 @@ spring:
         prefix: nacos-config
         #DEV命名空间的ID
         namespace: a0d9f516-1135-4de8-898e-db1367d12e3f
-feign:
-  hystrix:
-    enabled: true

@@ -2,6 +2,7 @@ package org.student.hystrix;
 
 import org.springframework.stereotype.Component;
 import org.student.client.UserAndRoleRemoteClient;
+import org.student.dto.UserAndRoleAddEncapsulation;
 import org.student.entity.UserAndRole;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class UserAndRoleRemoteHystrix implements UserAndRoleRemoteClient {
     }
 
     @Override
-    public String insertUserRole(UserAndRole ur) {
+    public String insertUserRole(UserAndRoleAddEncapsulation ur) {
         return null;
     }
 

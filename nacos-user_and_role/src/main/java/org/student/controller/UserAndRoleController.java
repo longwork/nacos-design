@@ -1,6 +1,7 @@
 package org.student.controller;
 
 import org.springframework.web.bind.annotation.*;
+import org.student.dto.UserAndRoleEncapsulation;
 import org.student.entity.UserAndRole;
 import org.student.service.UserAndRoleService;
 
@@ -12,7 +13,6 @@ import java.util.List;
  */
 @RestController
 public class UserAndRoleController {
-    public static final int OK = 1001;
 
     @Resource
     UserAndRoleService urService;
@@ -34,7 +34,7 @@ public class UserAndRoleController {
     }
 
     @PostMapping("/insert-user-role")
-    public String insertUserRole(@RequestBody UserAndRole ur) {
+    public String insertUserRole(@RequestBody UserAndRoleEncapsulation ur) {
         return urService.insertUserRole(ur);
     }
 

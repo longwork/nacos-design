@@ -1,6 +1,7 @@
 package org.student.service;
 
-import org.student.entity.UserEncapsulation;
+import org.student.dto.UserAddEncapsulation;
+import org.student.dto.UserUpdateEncapsulation;
 import org.student.entity.UserManagement;
 
 import java.time.LocalDate;
@@ -51,7 +52,7 @@ public interface UserManagementService {
      * @param u 想要插入的User
      * @return 返回结果的字符串
      */
-    String insertUser(UserEncapsulation u);
+    String insertUser(UserAddEncapsulation u);
 
     /**
      * 通过ID删除数据
@@ -76,15 +77,7 @@ public interface UserManagementService {
      * @param u 要更新的User
      * @return 返回结果的字符串
      */
-    String updateUserById(UserEncapsulation u);
-
-    /**
-     * 检测Id重复
-     *
-     * @param id 传入的id
-     * @return true重复，false不重复
-     */
-    boolean idDetection(Integer id);
+    String updateUserById(UserUpdateEncapsulation u);
 
     /**
      * 检测传入的字符串是否为用户名(不是以特殊字符开头)
@@ -153,14 +146,13 @@ public interface UserManagementService {
     /**
      * 检测数据是否合格
      *
-     * @param id        传入的id
      * @param name      传入的name
      * @param email     传入的email
      * @param phone     传入的phone
      * @param localDate 传入的localDate
      * @return 返回不符合的语句
      */
-    String detection(Integer id, String name, String email, String phone, LocalDate localDate);
+    String detection(String name, String email, String phone, LocalDate localDate);
 
     /**
      * 检测修改数据是否合格

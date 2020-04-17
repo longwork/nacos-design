@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.student.entity.UserEncapsulation;
+import org.student.dto.UserAddEncapsulation;
+import org.student.dto.UserUpdateEncapsulation;
 import org.student.entity.UserManagement;
 import org.student.service.UserManagementService;
 
@@ -113,7 +114,7 @@ public class UserManagementController {
      * @return 插入的结果
      */
     @PostMapping("/insert-user")
-    public String insertUser(@RequestBody UserEncapsulation u) {
+    public String insertUser(@RequestBody UserAddEncapsulation u) {
         return userService.insertUser(u);
     }
 
@@ -148,7 +149,7 @@ public class UserManagementController {
      * @return 修改的结果
      */
     @PutMapping("/update-user-by-id")
-    public String updateUserById(@RequestBody UserEncapsulation u) {
+    public String updateUserById(@RequestBody UserUpdateEncapsulation u) {
         return userService.updateUserById(u);
     }
 }

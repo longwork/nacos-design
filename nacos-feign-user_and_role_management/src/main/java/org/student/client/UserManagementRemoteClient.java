@@ -2,7 +2,8 @@ package org.student.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
-import org.student.entity.UserEncapsulation;
+import org.student.dto.UserAddEncapsulation;
+import org.student.dto.UserUpdateEncapsulation;
 import org.student.entity.UserManagement;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public interface UserManagementRemoteClient {
      * @return 插入的结果
      */
     @PostMapping("/insert-user")
-    String insertUser(@RequestBody UserEncapsulation u);
+    String insertUser(@RequestBody UserAddEncapsulation u);
 
     /**
      * 通过ID删除数据
@@ -90,6 +91,6 @@ public interface UserManagementRemoteClient {
      * @return 修改的结果
      */
     @PutMapping("/update-user-by-id")
-    String updateUserById(@RequestBody UserEncapsulation u);
+    String updateUserById(@RequestBody UserUpdateEncapsulation u);
 
 }

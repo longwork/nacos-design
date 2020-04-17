@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.student.client.RoleManagementRemoteClient;
 import org.student.client.UserAndRoleRemoteClient;
 import org.student.client.UserManagementRemoteClient;
-import org.student.entity.Result;
+import org.student.entity.UserResult;
 import org.student.entity.RoleManagement;
 import org.student.entity.UserAndRole;
 import org.student.entity.UserManagement;
@@ -29,14 +29,14 @@ public class UserResultController {
     UserAndRoleRemoteClient urRemoteClient;
 
     @GetMapping("/select-all-user-list")
-    public List<Result> selectAllResult() {
+    public List<UserResult> selectAllResult() {
         return getResults(userRemoteClient.selectAllUserList());
     }
 
     @GetMapping("/select-user-by-condition-list")
-    public List<Result> selectByCondition(@RequestParam("b1") String birth1,
-                                          @RequestParam("b2") String birth2,
-                                          @RequestParam("c") String condition) {
+    public List<UserResult> selectByCondition(@RequestParam("b1") String birth1,
+                                              @RequestParam("b2") String birth2,
+                                              @RequestParam("c") String condition) {
         List<UserManagement> us = userRemoteClient.selectUserByConditionList(birth1, birth2, condition);
         return getResults(us);
     }
@@ -47,10 +47,10 @@ public class UserResultController {
      * @param us 传入查询到的UserManagement集合
      * @return 返回最后的Result集合
      */
-    private List<Result> getResults(List<UserManagement> us) {
+    private List<UserResult> getResults(List<UserManagement> us) {
         List<RoleManagement> rs = roleRemoteClient.selectAllRoleList();
         List<UserAndRole> uRs = urRemoteClient.selectAllUserRoleList();
-        List<Result> list = new ArrayList<>(uRs.size());
+        List<UserResult> list = new ArrayList<>(uRs.size());
         for (UserAndRole uR : uRs) {
             int userId = uR.getUserId();
             int roleId = uR.getRoleId();
@@ -58,7 +58,7 @@ public class UserResultController {
                 if (userId == u.getId()) {
                     for (RoleManagement r : rs) {
                         if (roleId == r.getId()) {
-                            list.add(new Result(userId, u.getName(), u.getEmail(), u.getPhone(), u.getBirth(), r.getRoleName()));
+                            list.add(new UserResult(userId, u.getName(), u.getEmail(), u.getPhone(), u.getBirth(), r.getRoleName()));
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 package org.student.service;
 
+import org.student.dto.RoleAddEncapsulation;
 import org.student.entity.RoleManagement;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public interface RoleManagementService {
      * @param role 想要插入的Role
      * @return 返回结果字符串
      */
-    String insertRole(RoleManagement role);
+    String insertRole(RoleAddEncapsulation role);
 
     /**
      * 通过ID删除数据
@@ -64,14 +65,6 @@ public interface RoleManagementService {
      * @return 返回结果字符串
      */
     String updateRoleById(RoleManagement role);
-
-    /**
-     * 检测Id重复
-     *
-     * @param id 传入的id
-     * @return true重复，false不重复
-     */
-    boolean idDetection(Integer id);
 
     /**
      * 检测传入的字符串是否为用户名(不是以特殊字符开头)
@@ -100,12 +93,11 @@ public interface RoleManagementService {
     /**
      * 检测属性合格
      *
-     * @param id           传入的id
      * @param roleName     传入的roleName
      * @param roleDescribe 传入的roleDescribe
      * @return 返回不符合的语句
      */
-    String detection(Integer id, String roleName, String roleDescribe);
+    String detection(String roleName, String roleDescribe);
 
     /**
      * 检测修改数据是否合格

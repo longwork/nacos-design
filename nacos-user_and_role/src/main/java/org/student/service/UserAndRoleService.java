@@ -1,5 +1,6 @@
 package org.student.service;
 
+import org.student.dto.UserAndRoleEncapsulation;
 import org.student.entity.UserAndRole;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public interface UserAndRoleService {
      * @param ur 想要插入的UserAndRole
      * @return 返回结果的字符串
      */
-    String insertUserRole(UserAndRole ur);
+    String insertUserRole(UserAndRoleEncapsulation ur);
 
     /**
      * 通过ID删除数据
@@ -64,13 +65,5 @@ public interface UserAndRoleService {
      * @return 返回结果的字符串
      */
     String updateUserRole(UserAndRole ur);
-
-    /**
-     * 检测Id重复
-     *
-     * @param id 传入的id
-     * @return true重复，false不重复
-     */
-    boolean idDetection(Integer id);
 
 }

@@ -1,11 +1,10 @@
-package org.student.entity;
+package org.student.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author Administrator
@@ -13,11 +12,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEncapsulation1 {
-    private Integer id;
+public class UserAddEncapsulation {
     private String name;
     private String email;
     private String phone;
     private Date date;
-    List<Integer> roleIdList;
 }
