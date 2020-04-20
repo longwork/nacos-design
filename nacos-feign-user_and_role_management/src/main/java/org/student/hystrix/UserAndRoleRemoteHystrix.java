@@ -2,6 +2,7 @@ package org.student.hystrix;
 
 import org.springframework.stereotype.Component;
 import org.student.client.UserAndRoleRemoteClient;
+import org.student.dto.FieldCollection;
 import org.student.dto.UserAndRoleAddEncapsulation;
 import org.student.entity.UserAndRole;
 
@@ -38,7 +39,7 @@ public class UserAndRoleRemoteHystrix implements UserAndRoleRemoteClient {
     }
 
     @Override
-    public String deleteUserRoleByFieldNameAndValue(String fieldName, Integer fieldValue) {
+    public String deleteUserRoleByFieldNameAndValue(FieldCollection fieldCollections) {
         return null;
     }
 

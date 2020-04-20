@@ -53,7 +53,7 @@ public interface UserManagementRemoteClient {
      */
     @GetMapping("/select-user-by-fieldname-and-fieldvalue")
     List<UserManagement> selectUserByFileNameAndValue(@RequestParam("fieldName") String fieldName,
-                                                @RequestParam("fieldValue") String fieldValue);
+                                                      @RequestParam("fieldValue") String fieldValue);
 
     /**
      * 插入数据

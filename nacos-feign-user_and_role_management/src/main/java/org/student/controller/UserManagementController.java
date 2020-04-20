@@ -3,14 +3,13 @@ package org.student.controller;
 import org.springframework.web.bind.annotation.*;
 import org.student.client.UserAndRoleRemoteClient;
 import org.student.client.UserManagementRemoteClient;
-import org.student.dto.UserAddEncapsulation;
-import org.student.dto.UserAndRoleAddEncapsulation;
-import org.student.dto.UserAndRoleEncapsulation;
-import org.student.dto.UserUpdateEncapsulation;
+import org.student.dto.*;
 import org.student.entity.UserAndRole;
 import org.student.entity.UserManagement;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -43,32 +42,32 @@ public class UserManagementController {
     }
 
     @PostMapping("/insert-user")
-    public String insertUser(@RequestBody UserAndRoleEncapsulation u1) {
-        Integer id = u1.getId();
+    public String insertUser(@RequestBody UserAddAndUpdate u1) {
         String name = u1.getName();
         String email = u1.getEmail();
         String phone = u1.getPhone();
         Date date = u1.getDate();
+
         UserAddEncapsulation u = new UserAddEncapsulation(name, email, phone, date);
         String s1 = remoteClient.insertUser(u);
 
         List<Integer> roleIdList = u1.getRoleIdList();
         StringBuilder s2 = new StringBuilder();
-
+        List<UserManagement> name1 = remoteClient.selectUserByFileNameAndValue("name", name);
         for (Integer integer : roleIdList) {
-            UserAndRoleAddEncapsulation ur = new UserAndRoleAddEncapsulation(id, integer);
+            UserAndRoleAddEncapsulation ur = new UserAndRoleAddEncapsulation(name1.get(0).getId(), integer);
             s2.append(urRemoteClient.insertUserRole(ur));
         }
-
         return "UserManagement表：" + s1 + "," + "关联表：" + s2;
     }
 
     @DeleteMapping("/delete-user-by-id")
-    public String deleteUserById(@RequestParam("id") Integer id,
-                                 @RequestParam("fieldName") String fileName,
-                                 @RequestParam("fieldValue") Integer fieldValue) {
+    public String deleteUserById(@RequestParam("id") Integer id) {
         String s1 = remoteClient.deleteUserById(id);
-        String s = urRemoteClient.deleteUserRoleByFieldNameAndValue(fileName, fieldValue);
+        Collection<Integer> collection = new ArrayList<>();
+        collection.add(id);
+        FieldCollection fieldCollections = new FieldCollection("userId", collection);
+        String s = urRemoteClient.deleteUserRoleByFieldNameAndValue(fieldCollections);
         return "UserManagement表：" + s1 + "," + "关联表" + s;
     }
 
@@ -77,27 +76,19 @@ public class UserManagementController {
                                                 @RequestParam("fieldValue") String fieldValue) {
         List<UserManagement> userManagements = remoteClient.selectUserByFileNameAndValue(fieldName, fieldValue);
         if (userManagements.isEmpty()) {
-            return "数据库没有这个值";
+            return "数据库中不存在此字段值";
         }
-        String str = "data";
-        String s1;
-        String s2 = null;
-        if (!str.equals(fieldName)) {
-            int userId = userManagements.get(0).getId();
-            s1 = remoteClient.deleteUserByFieldNameAndValue(fieldName, fieldValue);
-            s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId", userId);
-        } else {
-            s1 = remoteClient.deleteUserByFieldNameAndValue(fieldName, fieldValue);
-            for (UserManagement userManagement : userManagements) {
-                int userId = userManagement.getId();
-                s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId", userId);
-            }
+        Collection<Integer> collections = new ArrayList<>();
+        for (UserManagement userManagement : userManagements) {
+            collections.add(userManagement.getId());
         }
+        String s1 = remoteClient.deleteUserByFieldNameAndValue(fieldName, fieldValue);
+        String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue(new FieldCollection("userId", collections));
         return "UserManagement表：" + s1 + "," + "关联表" + s2;
     }
 
     @PutMapping("/update-user-by-id")
-    public String updateUserById(@RequestBody UserAndRoleEncapsulation u1) {
+    public String updateUserById(@RequestBody UserAddAndUpdate u1) {
         Integer id = u1.getId();
         String name = u1.getName();
         String email = u1.getEmail();

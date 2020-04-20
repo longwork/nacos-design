@@ -131,7 +131,7 @@ public class UserManagementServiceImpl implements UserManagementService {
      *
      * @param fieldName  字段值
      * @param fieldValue 字段名
-     * @return 返回数值(1代表成功, 0代表失败, 1000代表不存在算删除失败)
+     * @return 返回结果的字符串
      */
     @Override
     public String deleteUserByFieldNameAndValue(String fieldName, String fieldValue) {
@@ -154,7 +154,7 @@ public class UserManagementServiceImpl implements UserManagementService {
      * 通过Id修改数据
      *
      * @param u 要更新的User
-     * @return 返回数值(1代表修改成功, 0代表修改失败)
+     * @return 返回结果的字符串
      */
     @Override
     public String updateUserById(UserUpdateEncapsulation u) {
@@ -293,11 +293,11 @@ public class UserManagementServiceImpl implements UserManagementService {
         if (nameDetection(name)) {
             return "姓名格式不能用特殊符号开头";
         }
-        if (nameRepetition(name)) {
-            return "姓名已存在";
-        }
         if (name.length() > NAME_LENGTH) {
             return "姓名长度太长";
+        }
+        if (nameRepetition(name)) {
+            return "姓名已存在";
         }
         if (emailDetection(email)) {
             return "邮箱格式不对";

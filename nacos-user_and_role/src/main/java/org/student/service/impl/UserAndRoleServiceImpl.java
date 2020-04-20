@@ -2,15 +2,15 @@ package org.student.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.stereotype.Service;
-import org.student.dto.UserAndRoleEncapsulation;
+import org.student.dto.FieldCollection;
+import org.student.dto.UserAndRoleAddEncapsulation;
 import org.student.entity.UserAndRole;
 import org.student.mapper.UserAndRoleMapper;
 import org.student.service.UserAndRoleService;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Administrator
@@ -38,7 +38,14 @@ public class UserAndRoleServiceImpl implements UserAndRoleService {
     }
 
     @Override
-    public String insertUserRole(UserAndRoleEncapsulation ur) {
+    public List<UserAndRole> selectUserRoleByFieldNameAndValue(String fieldName, Collection<Integer> collections){
+        return urMapper.selectList(
+          new QueryWrapper<UserAndRole>().in(fieldName,collections)
+        );
+    }
+
+    @Override
+    public String insertUserRole(UserAndRoleAddEncapsulation ur) {
         Integer userId = ur.getUserId();
         Integer roleId = ur.getRoleId();
         UserAndRole u = new UserAndRole(userId, roleId);
@@ -60,17 +67,20 @@ public class UserAndRoleServiceImpl implements UserAndRoleService {
     }
 
     @Override
-    public String deleteUserRoleByFieldNameAndValue(String fieldName, Integer fieldValue) {
+    public String deleteUserRoleByFieldNameAndValue(FieldCollection fieldCollection) {
+        String fieldName = fieldCollection.getFieldName();
+        Collection<Integer> collections = fieldCollection.getCollections();
         //先进行查询是否存在
-        List<UserAndRole> userAndRoles = selectUserRoleByFieldNameAndValue(fieldName, fieldValue);
+        List<UserAndRole> userAndRoles = urMapper.selectList(
+                new QueryWrapper<UserAndRole>().in(fieldName, collections)
+        );
         //如果不存在，则不进行删除
         if (userAndRoles.isEmpty()) {
             return "数据不存在，删除失败";
         } else {
-            Map<String, Object> map = new HashMap<>(1);
-            //如果不指定，则全部删除
-            map.put(fieldName, fieldValue);
-            int delete = urMapper.deleteByMap(map);
+            int delete = urMapper.delete(
+                    new QueryWrapper<UserAndRole>().in(fieldName, collections)
+            );
             //如果删除成功就返回1，失败返回0
             return delete > 0 ? "删除成功" : "删除失败";
         }

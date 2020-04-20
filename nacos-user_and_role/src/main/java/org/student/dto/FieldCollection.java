@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
+
 /**
  * @author Administrator
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserAndRoleEncapsulation {
-    private Integer userId;
-    private Integer roleId;
+public class FieldCollection {
+    private String fieldName;
+    private Collection<Integer> collections;
 }

@@ -3,13 +3,15 @@ package org.student.controller;
 import org.springframework.web.bind.annotation.*;
 import org.student.client.RoleManagementRemoteClient;
 import org.student.client.UserAndRoleRemoteClient;
-import org.student.dto.RoleAddEncapsulation;
-import org.student.dto.RoleUpdateEncapsulation;
+import org.student.dto.FieldCollection;
+import org.student.dto.RoleAddAndUpdate;
 import org.student.dto.UserAndRoleAddEncapsulation;
 import org.student.entity.RoleManagement;
 import org.student.entity.UserAndRole;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -41,27 +43,29 @@ public class RoleManagementController {
     }
 
     @PostMapping("/insert-role")
-    public String insertRole(@RequestBody RoleAddEncapsulation re) {
+    public String insertRole(@RequestBody RoleAddAndUpdate re) {
         String roleName = re.getRoleName();
         String roleDescribe = re.getRoleDescribe();
-        List<Integer> userId = re.getUserId();
         RoleManagement role = new RoleManagement(roleName, roleDescribe);
         String s1 = remoteClient.insertRole(role);
+
+        List<Integer> userId = re.getUserId();
         String s2 = null;
+        RoleManagement r = remoteClient.selectRoleByFieldNameAndValue("roleName", roleName);
         for (Integer integer : userId) {
-            RoleManagement r = remoteClient.selectRoleByFieldNameAndValue("fieldName", roleName);
             UserAndRoleAddEncapsulation ur = new UserAndRoleAddEncapsulation(integer, r.getId());
             s2 = urRemoteClient.insertUserRole(ur);
         }
-
-
         return "RoleManagement表：" + s1 + "," + "关联表" + s2;
     }
 
     @DeleteMapping("/delete-role")
     public String deleteRole(@RequestParam("id") Integer id) {
         String s1 = remoteClient.deleteRole(id);
-        String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId", id);
+        Collection<Integer> collection = new ArrayList<>();
+        collection.add(id);
+        FieldCollection fieldCollections = new FieldCollection("roleId", collection);
+        String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue(fieldCollections);
         return "RoleManagement表：" + s1 + "," + "关联表" + s2;
     }
 
@@ -69,14 +73,19 @@ public class RoleManagementController {
     public String deleteRoleByFieldNameAndValue(@RequestParam("fieldName") String fieldName,
                                                 @RequestParam("fieldValue") String fieldValue) {
         RoleManagement roleManagement = remoteClient.selectRoleByFieldNameAndValue(fieldName, fieldValue);
+        if (roleManagement == null) {
+            return "数据库中不存在此字段值";
+        }
         int roleId = roleManagement.getId();
+        Collection<Integer> collections = new ArrayList<>();
+        collections.add(roleId);
         String s1 = remoteClient.deleteRoleByFieldNameAndValue(fieldName, fieldValue);
-        String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId", roleId);
+        String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue(new FieldCollection("roleId", collections));
         return "RoleManagement表：" + s1 + "," + "关联表" + s2;
     }
 
     @PutMapping("/update-role-by-id")
-    public String updateRoleById(@RequestBody RoleUpdateEncapsulation role) {
+    public String updateRoleById(@RequestBody RoleAddAndUpdate role) {
         Integer roleId = role.getRoleId();
         String roleName = role.getRoleName();
         String roleDescribe = role.getRoleDescribe();
@@ -87,7 +96,7 @@ public class RoleManagementController {
         int i = 0;
         for (Integer integer : userId) {
             List<UserAndRole> userId1 = urRemoteClient.selectUserRoleByFieldNameAndValue("userId", integer);
-            UserAndRole ur = new UserAndRole(userId1.get(i++).getId(),integer,roleId);
+            UserAndRole ur = new UserAndRole(userId1.get(i++).getId(), integer, roleId);
             s2 = urRemoteClient.updateUserRole(ur);
         }
         return "RoleManagement表：" + s1 + "," + "关联表" + s2;

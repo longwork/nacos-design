@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.student.client.RoleManagementRemoteClient;
 import org.student.client.UserAndRoleRemoteClient;
 import org.student.client.UserManagementRemoteClient;
-import org.student.entity.UserResult;
 import org.student.entity.RoleManagement;
 import org.student.entity.UserAndRole;
 import org.student.entity.UserManagement;
+import org.student.entity.UserResult;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;

@@ -1,10 +1,11 @@
-package org.student.entity;
+package org.student.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Administrator
@@ -12,10 +13,11 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserManagement {
-    private int id;
+public class UserAddAndUpdate {
+    private Integer id;
     private String name;
     private String email;
     private String phone;
-    private LocalDate birth;
+    private Date date;
+    private List<Integer> roleIdList;
 }

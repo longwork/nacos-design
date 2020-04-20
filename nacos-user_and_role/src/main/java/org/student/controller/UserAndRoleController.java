@@ -1,7 +1,8 @@
 package org.student.controller;
 
 import org.springframework.web.bind.annotation.*;
-import org.student.dto.UserAndRoleEncapsulation;
+import org.student.dto.FieldCollection;
+import org.student.dto.UserAndRoleAddEncapsulation;
 import org.student.entity.UserAndRole;
 import org.student.service.UserAndRoleService;
 
@@ -33,8 +34,13 @@ public class UserAndRoleController {
         return urService.selectUserRoleByFieldNameAndValue(fieldName, fieldValue);
     }
 
+    @GetMapping("/select-user-role-by-fieldCollection")
+    public List<UserAndRole> selectUserRoleByFieldNameAndValue(@RequestBody FieldCollection fieldCollection) {
+        return urService.selectUserRoleByFieldNameAndValue(fieldCollection.getFieldName(), fieldCollection.getCollections());
+    }
+
     @PostMapping("/insert-user-role")
-    public String insertUserRole(@RequestBody UserAndRoleEncapsulation ur) {
+    public String insertUserRole(@RequestBody UserAndRoleAddEncapsulation ur) {
         return urService.insertUserRole(ur);
     }
 
@@ -44,9 +50,8 @@ public class UserAndRoleController {
     }
 
     @DeleteMapping("/delete-user-role-by-fieldname-and-fieldvalue")
-    public String deleteUserRoleByFieldNameAndValue(@RequestParam("fieldName") String fieldName,
-                                                    @RequestParam("fieldValue") Integer fieldValue) {
-        return urService.deleteUserRoleByFieldNameAndValue(fieldName, fieldValue);
+    public String deleteUserRoleByFieldNameAndValue(@RequestBody FieldCollection fieldCollection) {
+        return urService.deleteUserRoleByFieldNameAndValue(fieldCollection);
     }
 
     @PutMapping("/update-user-role")

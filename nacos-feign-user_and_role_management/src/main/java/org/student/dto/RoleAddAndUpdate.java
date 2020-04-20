@@ -12,8 +12,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleAddEncapsulation {
-
+public class RoleAddAndUpdate {
+    private Integer roleId;
     private String roleName;
     private String roleDescribe;
     private List<Integer> userId;

@@ -2,6 +2,7 @@ package org.student.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+import org.student.dto.FieldCollection;
 import org.student.dto.UserAndRoleAddEncapsulation;
 import org.student.entity.UserAndRole;
 
@@ -61,13 +62,11 @@ public interface UserAndRoleRemoteClient {
     /**
      * 通过fieldName和fieldValue删除数据
      *
-     * @param fieldName  字段值
-     * @param fieldValue 字段名
+     * @param fieldCollections 传入要删除的结果集
      * @return 返回结果字符串
      */
     @DeleteMapping("/delete-user-role-by-fieldname-and-fieldvalue")
-    String deleteUserRoleByFieldNameAndValue(@RequestParam("fieldName") String fieldName,
-                                             @RequestParam("fieldValue") Integer fieldValue);
+    String deleteUserRoleByFieldNameAndValue(@RequestBody FieldCollection fieldCollections);
 
     /**
      * 通过Id修改数据

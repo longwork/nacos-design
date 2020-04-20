@@ -1,8 +1,10 @@
 package org.student.service;
 
-import org.student.dto.UserAndRoleEncapsulation;
+import org.student.dto.FieldCollection;
+import org.student.dto.UserAndRoleAddEncapsulation;
 import org.student.entity.UserAndRole;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -34,12 +36,21 @@ public interface UserAndRoleService {
     List<UserAndRole> selectUserRoleByFieldNameAndValue(String fieldName, Integer fieldValue);
 
     /**
+     * 测试删除行不行
+     *
+     * @param fieldName   字段名
+     * @param collections 字段值集合
+     * @return 查询到的集合
+     */
+    List<UserAndRole> selectUserRoleByFieldNameAndValue(String fieldName, Collection<Integer> collections);
+
+    /**
      * 插入数据
      *
      * @param ur 想要插入的UserAndRole
      * @return 返回结果的字符串
      */
-    String insertUserRole(UserAndRoleEncapsulation ur);
+    String insertUserRole(UserAndRoleAddEncapsulation ur);
 
     /**
      * 通过ID删除数据
@@ -52,16 +63,15 @@ public interface UserAndRoleService {
     /**
      * 通过fieldName和fieldValue删除数据
      *
-     * @param fieldName  字段值
-     * @param fieldValue 字段名
+     * @param fieldCollection 传入的集合
      * @return 返回结果的字符串
      */
-    String deleteUserRoleByFieldNameAndValue(String fieldName, Integer fieldValue);
+    String deleteUserRoleByFieldNameAndValue(FieldCollection fieldCollection);
 
     /**
      * 通过Id修改数据
      *
-     * @param ur   要更新的UserAndRole
+     * @param ur 要更新的UserAndRole
      * @return 返回结果的字符串
      */
     String updateUserRole(UserAndRole ur);
