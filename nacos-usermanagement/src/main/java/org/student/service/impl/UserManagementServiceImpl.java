@@ -3,15 +3,12 @@ package org.student.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.stereotype.Service;
 import org.student.appservice.UserManagementAppService;
-import org.student.dto.UserAddEncapsulation;
-import org.student.dto.UserUpdateEncapsulation;
 import org.student.entity.UserManagement;
 import org.student.mapper.UserManagementMapper;
 import org.student.service.UserManagementService;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,18 +87,12 @@ public class UserManagementServiceImpl implements UserManagementService {
      * @return 返回结果的字符串
      */
     @Override
-    public String insertUser(UserAddEncapsulation u) {
-        String name = u.getName();
-        String email = u.getEmail();
-        String phone = u.getPhone();
-        Date date = u.getDate();
-        LocalDate localDate = uAppService.dateTimeFormat(date);
-        String detection = uAppService.detection(name, email, phone, localDate);
+    public String insertUser(UserManagement u) {
+        String detection = uAppService.detection(u);
         if (detection != null) {
             return detection;
         }
-        UserManagement user = new UserManagement(name, email, phone, localDate);
-        int insert = userMapper.insert(user);
+        int insert = userMapper.insert(u);
         return insert > 0 ? "插入成功" : "插入失败";
     }
 
@@ -156,13 +147,12 @@ public class UserManagementServiceImpl implements UserManagementService {
      * @return 返回结果的字符串
      */
     @Override
-    public String updateUserById(UserUpdateEncapsulation u) {
+    public String updateUserById(UserManagement u) {
         Integer id = u.getId();
         String name = u.getName();
         String email = u.getEmail();
         String phone = u.getPhone();
-        Date date = u.getDate();
-        LocalDate localDate = uAppService.dateTimeFormat(date);
+        LocalDate localDate = u.getBirth();
         if (selectUserById(id) == null) {
             return "数据不存在，修改失败";
         } else {
@@ -172,7 +162,7 @@ public class UserManagementServiceImpl implements UserManagementService {
             }
             UserManagement user = new UserManagement(id, name, email, phone, localDate);
             int update = userMapper.updateById(user);
-            return update > 1 ? "修改成功" : "修改失败";
+            return update > 0 ? "修改成功" : "修改失败";
         }
     }
 

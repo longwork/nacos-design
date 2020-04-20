@@ -1,5 +1,9 @@
 package org.student.appservice;
 
+import org.student.dto.UserAddEncapsulation;
+import org.student.dto.UserUpdateEncapsulation;
+import org.student.entity.UserManagement;
+
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -8,6 +12,22 @@ import java.util.Date;
  * @date 14:15 2020-04-20 周一
  */
 public interface UserManagementAppService {
+    /**
+     * 将前端传来的dto类转换为entity实体类
+     *
+     * @param user 传入要修改的user
+     * @return 返回一个转换的entity实体类
+     */
+    UserManagement entityTransaction(UserUpdateEncapsulation user);
+
+    /**
+     * 将前端传来的dto类转换为entity实体类
+     *
+     * @param user 传入要插入的user
+     * @return 返回一个转换的entity实体类
+     */
+    UserManagement entityTransaction(UserAddEncapsulation user);
+
     /**
      * 检测传入的字符串是否为用户名(不是以特殊字符开头)
      *
@@ -75,13 +95,10 @@ public interface UserManagementAppService {
     /**
      * 检测数据是否合格
      *
-     * @param name      传入的name
-     * @param email     传入的email
-     * @param phone     传入的phone
-     * @param localDate 传入的localDate
+     * @param u 要插入的UserManagement
      * @return 返回不符合的语句
      */
-    String detection(String name, String email, String phone, LocalDate localDate);
+    String detection(UserManagement u);
 
     /**
      * 检测修改数据是否合格

@@ -2,7 +2,7 @@ package org.student.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.stereotype.Service;
-import org.student.dto.RoleAddEncapsulation;
+import org.student.appservice.RoleManagementAppService;
 import org.student.entity.RoleManagement;
 import org.student.mapper.RoleManagementMapper;
 import org.student.service.RoleManagementService;
@@ -11,15 +11,14 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Administrator
  */
 @Service
 public class RoleManagementServerImpl implements RoleManagementService {
-    private static final int ROLE_DESCRIBE_LENGTH = 20;
+    @Resource
+    RoleManagementAppService roleAppService;
 
     @Resource
     RoleManagementMapper roleMapper;
@@ -67,15 +66,13 @@ public class RoleManagementServerImpl implements RoleManagementService {
      * @return 返回结果字符串
      */
     @Override
-    public String insertRole(RoleAddEncapsulation role) {
-        String roleName = role.getRoleName();
-        String roleDescribe = role.getRoleDescribe();
-        String detection = detection(roleName, roleDescribe);
+    public String insertRole(RoleManagement role) {
+        String detection = roleAppService.detection(role);
         if (detection != null) {
             return detection;
         }
-        RoleManagement r = new RoleManagement(roleName, roleDescribe);
-        int insert = roleMapper.insert(r);
+
+        int insert = roleMapper.insert(role);
         return insert > 0 ? "插入成功" : "插入失败";
     }
 
@@ -136,7 +133,7 @@ public class RoleManagementServerImpl implements RoleManagementService {
         if (selectRoleById(id) == null) {
             return "数据不存在,修改失败";
         } else {
-            String updateDetection = updateDetection(id, roleName, roleDescribe);
+            String updateDetection = roleAppService.updateDetection(id, roleName, roleDescribe);
             if (updateDetection != null) {
                 return updateDetection;
             }
@@ -145,75 +142,5 @@ public class RoleManagementServerImpl implements RoleManagementService {
         }
     }
 
-    /**
-     * 检测传入的字符串是否为用户名(不是以特殊字符开头)
-     *
-     * @param roleName 传入的用户名
-     * @return true代表传入的是用户名, false代表传入的不是用户名
-     */
-    @Override
-    public boolean roleNameDetection(String roleName) {
-        String pattern = "[A-Za-z0-9_\\-\\u4e00-\\u9fa5]+";
-        Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(roleName);
-        return !m.matches();
-    }
 
-    /**
-     * 检测用户名是否存在
-     *
-     * @param roleName 传入的Name
-     * @return true为数据库存在这个值，false代表数据库中没有这个值
-     */
-    @Override
-    public boolean roleNameRepetition(String roleName) {
-        RoleManagement role = selectRoleByFieldNameAndValue("roleName", roleName);
-        return role != null;
-    }
-
-    @Override
-    public boolean roleDescribeRepetition(String roleDescribe) {
-        RoleManagement role = selectRoleByFieldNameAndValue("roleDescribe", roleDescribe);
-        return role != null;
-    }
-
-    /**
-     * 检测属性合格
-     *
-     * @param roleName     传入的roleName
-     * @param roleDescribe 传入的roleDescribe
-     * @return 返回不符合的语句
-     */
-    @Override
-    public String detection(String roleName, String roleDescribe) {
-        if (roleNameDetection(roleName)) {
-            return "角色名格式不对";
-        }
-        if (roleNameRepetition(roleName)) {
-            return "角色名称已存在";
-        }
-        if (roleDescribe.length() > ROLE_DESCRIBE_LENGTH) {
-            return "描述过长，请减少描述";
-        }
-        if (roleDescribeRepetition(roleDescribe)) {
-            return "描述存在，请修改描述";
-        }
-        return null;
-    }
-
-    @Override
-    public String updateDetection(Integer id, String roleName, String roleDescribe) {
-        RoleManagement r = selectRoleById(id);
-
-        if (roleNameRepetition(roleName) && !roleName.equals(r.getRoleName())) {
-            return "角色名已存在";
-        }
-        if (roleDescribe.length() > ROLE_DESCRIBE_LENGTH) {
-            return "角色描述太长";
-        }
-        if (roleDescribeRepetition(roleDescribe) && !roleDescribe.equals(r.getRoleDescribe())) {
-            return "描述已存在";
-        }
-        return null;
-    }
 }

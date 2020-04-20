@@ -1,6 +1,7 @@
 package org.student.controller;
 
 import org.springframework.web.bind.annotation.*;
+import org.student.appservice.UserAndRoleAppService;
 import org.student.dto.FieldCollection;
 import org.student.dto.UserAndRoleAddEncapsulation;
 import org.student.entity.UserAndRole;
@@ -17,6 +18,8 @@ public class UserAndRoleController {
 
     @Resource
     UserAndRoleService urService;
+    @Resource
+    UserAndRoleAppService urAppService;
 
     @GetMapping("/select-all-user-role-list")
     public List<UserAndRole> selectAllUserRoleList() {
@@ -41,7 +44,8 @@ public class UserAndRoleController {
 
     @PostMapping("/insert-user-role")
     public String insertUserRole(@RequestBody UserAndRoleAddEncapsulation ur) {
-        return urService.insertUserRole(ur);
+        UserAndRole userAndRole = urAppService.entityTransaction(ur);
+        return urService.insertUserRole(userAndRole);
     }
 
     @DeleteMapping("/delete-user-role")

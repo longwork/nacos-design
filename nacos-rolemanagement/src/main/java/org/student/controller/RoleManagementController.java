@@ -2,7 +2,9 @@ package org.student.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.student.appservice.RoleManagementAppService;
 import org.student.dto.RoleAddEncapsulation;
+import org.student.dto.RoleUpdateEncapsulation;
 import org.student.entity.RoleManagement;
 import org.student.service.RoleManagementService;
 
@@ -29,6 +31,9 @@ public class RoleManagementController {
 
     @Resource
     RoleManagementService roleService;
+
+    @Resource
+    RoleManagementAppService roleAppService;
 
     /**
      * 查询所有的role角色
@@ -72,7 +77,8 @@ public class RoleManagementController {
      */
     @PostMapping("/insert-role")
     public String insertRole(@RequestBody RoleAddEncapsulation role) {
-        return roleService.insertRole(role);
+        RoleManagement roleManagement = roleAppService.entityTransaction(role);
+        return roleService.insertRole(roleManagement);
     }
 
     /**
@@ -106,8 +112,9 @@ public class RoleManagementController {
      * @return 修改之后的描述
      */
     @PutMapping("/update-role-by-id")
-    public String updateRoleById(@RequestBody RoleManagement role) {
-        return roleService.updateRoleById(role);
+    public String updateRoleById(@RequestBody RoleUpdateEncapsulation role) {
+        RoleManagement roleManagement = roleAppService.entityTransaction(role);
+        return roleService.updateRoleById(roleManagement);
     }
 
 }

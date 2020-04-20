@@ -1,6 +1,10 @@
-D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-user_and_role\src\main\java\org\student\dao\UserAndRoleDao.java
+D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-user_and_role\src\main\java\org\student\dto\FieldCollection.java
 D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-user_and_role\src\main\java\org\student\service\UserAndRoleService.java
+D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-user_and_role\src\main\java\org\student\dto\UserAndRoleAddEncapsulation.java
+D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-user_and_role\src\main\java\org\student\service\impl\UserAndRoleServiceImpl.java
+D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-user_and_role\src\main\java\org\student\appservice\impl\UserAndRoleAppServiceImpl.java
+D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-user_and_role\src\main\java\org\student\appservice\UserAndRoleAppService.java
 D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-user_and_role\src\main\java\org\student\mapper\UserAndRoleMapper.java
 D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-user_and_role\src\main\java\org\student\NacosUserAndRoleApplication.java
 D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-user_and_role\src\main\java\org\student\controller\UserAndRoleController.java
-D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-user_and_role\src\main\java\org\student\entity\userandrole.java
+D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-user_and_role\src\main\java\org\student\entity\UserAndRole.java

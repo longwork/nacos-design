@@ -1,7 +1,5 @@
 package org.student.service;
 
-import org.student.dto.UserAddEncapsulation;
-import org.student.dto.UserUpdateEncapsulation;
 import org.student.entity.UserManagement;
 
 import java.util.List;
@@ -50,7 +48,7 @@ public interface UserManagementService {
      * @param u 想要插入的User
      * @return 返回结果的字符串
      */
-    String insertUser(UserAddEncapsulation u);
+    String insertUser(UserManagement u);
 
     /**
      * 通过ID删除数据
@@ -75,9 +73,6 @@ public interface UserManagementService {
      * @param u 要更新的User
      * @return 返回结果的字符串
      */
-    String updateUserById(UserUpdateEncapsulation u);
-
-
-
+    String updateUserById(UserManagement u);
 
 }

@@ -1,0 +1,10 @@
+org\student\mapper\UserManagementMapper.class
+org\student\service\UserManagementService.class
+org\student\appservice\impl\UserManagementAppServiceImpl.class
+org\student\service\impl\UserManagementServiceImpl.class
+org\student\dto\UserUpdateEncapsulation.class
+org\student\entity\UserManagement.class
+org\student\appservice\UserManagementAppService.class
+org\student\controller\UserManagementController.class
+org\student\dto\UserAddEncapsulation.class
+org\student\NacosUsermanagementApplication.class

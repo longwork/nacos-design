@@ -1,7 +1,6 @@
 package org.student.service;
 
 import org.student.dto.FieldCollection;
-import org.student.dto.UserAndRoleAddEncapsulation;
 import org.student.entity.UserAndRole;
 
 import java.util.Collection;
@@ -27,6 +26,15 @@ public interface UserAndRoleService {
     UserAndRole selectUserRoleById(Integer id);
 
     /**
+     * 通过两个ID查询唯一值
+     *
+     * @param userId 用户id
+     * @param roleId 角色id
+     * @return 查询到的关联表中的数据
+     */
+    UserAndRole selectUserRoleById(Integer userId, Integer roleId);
+
+    /**
      * 通过fieldName和fieldValue值来查询
      *
      * @param fieldName  字段名
@@ -50,7 +58,7 @@ public interface UserAndRoleService {
      * @param ur 想要插入的UserAndRole
      * @return 返回结果的字符串
      */
-    String insertUserRole(UserAndRoleAddEncapsulation ur);
+    String insertUserRole(UserAndRole ur);
 
     /**
      * 通过ID删除数据

@@ -1,6 +1,10 @@
-org\student\entity\userandrole.class
 org\student\service\UserAndRoleService.class
-org\student\dao\UserAndRoleDao.class
+org\student\appservice\impl\UserAndRoleAppServiceImpl.class
+org\student\service\impl\UserAndRoleServiceImpl.class
+org\student\appservice\UserAndRoleAppService.class
+org\student\dto\UserAndRoleAddEncapsulation.class
 org\student\NacosUserAndRoleApplication.class
 org\student\controller\UserAndRoleController.class
+org\student\dto\FieldCollection.class
 org\student\mapper\UserAndRoleMapper.class
+org\student\entity\UserAndRole.class

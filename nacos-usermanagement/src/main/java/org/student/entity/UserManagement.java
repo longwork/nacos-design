@@ -26,7 +26,7 @@ public class UserManagement {
     private String email;
     @TableField(value = "phone")
     private String phone;
-    @TableId(value = "birth")
+    @TableField(value = "birth")
     private LocalDate birth;
 
     public UserManagement(String name, String email, String phone, LocalDate birth) {

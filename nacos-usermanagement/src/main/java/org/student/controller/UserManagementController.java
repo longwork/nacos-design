@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.student.appservice.UserManagementAppService;
 import org.student.dto.UserAddEncapsulation;
 import org.student.dto.UserUpdateEncapsulation;
 import org.student.entity.UserManagement;
@@ -46,6 +47,9 @@ public class UserManagementController {
 
     @Resource
     UserManagementService userService;
+
+    @Resource
+    UserManagementAppService uAppService;
 
     /**
      * 在初始化的时候给传入的String类型转化为Date类型
@@ -115,7 +119,8 @@ public class UserManagementController {
      */
     @PostMapping("/insert-user")
     public String insertUser(@RequestBody UserAddEncapsulation u) {
-        return userService.insertUser(u);
+        UserManagement user = uAppService.entityTransaction(u);
+        return userService.insertUser(user);
     }
 
     /**
@@ -150,6 +155,7 @@ public class UserManagementController {
      */
     @PutMapping("/update-user-by-id")
     public String updateUserById(@RequestBody UserUpdateEncapsulation u) {
-        return userService.updateUserById(u);
+        UserManagement user = uAppService.entityTransaction(u);
+        return userService.updateUserById(user);
     }
 }

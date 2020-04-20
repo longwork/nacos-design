@@ -2,8 +2,8 @@ package org.student.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.stereotype.Service;
+import org.student.appservice.UserAndRoleAppService;
 import org.student.dto.FieldCollection;
-import org.student.dto.UserAndRoleAddEncapsulation;
 import org.student.entity.UserAndRole;
 import org.student.mapper.UserAndRoleMapper;
 import org.student.service.UserAndRoleService;
@@ -19,6 +19,8 @@ import java.util.List;
 public class UserAndRoleServiceImpl implements UserAndRoleService {
     @Resource
     UserAndRoleMapper urMapper;
+    @Resource
+    UserAndRoleAppService urAppService;
 
     @Override
     public List<UserAndRole> selectAllUserRoleList() {
@@ -31,6 +33,15 @@ public class UserAndRoleServiceImpl implements UserAndRoleService {
     }
 
     @Override
+    public UserAndRole selectUserRoleById(Integer userId, Integer roleId) {
+        return urMapper.selectOne(
+                new QueryWrapper<UserAndRole>()
+                        .eq("userId", userId)
+                        .and(i -> i.eq("roleId", roleId))
+        );
+    }
+
+    @Override
     public List<UserAndRole> selectUserRoleByFieldNameAndValue(String fieldName, Integer fieldValue) {
         return urMapper.selectList(
                 new QueryWrapper<UserAndRole>().eq(fieldName, fieldValue)
@@ -38,18 +49,18 @@ public class UserAndRoleServiceImpl implements UserAndRoleService {
     }
 
     @Override
-    public List<UserAndRole> selectUserRoleByFieldNameAndValue(String fieldName, Collection<Integer> collections){
+    public List<UserAndRole> selectUserRoleByFieldNameAndValue(String fieldName, Collection<Integer> collections) {
         return urMapper.selectList(
-          new QueryWrapper<UserAndRole>().in(fieldName,collections)
+                new QueryWrapper<UserAndRole>().in(fieldName, collections)
         );
     }
 
     @Override
-    public String insertUserRole(UserAndRoleAddEncapsulation ur) {
-        Integer userId = ur.getUserId();
-        Integer roleId = ur.getRoleId();
-        UserAndRole u = new UserAndRole(userId, roleId);
-        int insert = urMapper.insert(u);
+    public String insertUserRole(UserAndRole ur) {
+        if (!urAppService.detection(ur)) {
+            return "数据已存在，插入失败";
+        }
+        int insert = urMapper.insert(ur);
         return insert > 0 ? "插入成功" : "插入失败";
     }
 

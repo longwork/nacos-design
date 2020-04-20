@@ -1,6 +1,10 @@
-org\student\entity\rolemanagement.class
 org\student\mapper\RoleManagementMapper.class
+org\student\dto\RoleAddEncapsulation.class
+org\student\dto\RoleUpdateEncapsulation.class
+org\student\service\RoleManagementService.class
 org\student\NacosRolemanagementApplication.class
-org\student\dao\RoleManagementDao.class
-org\student\server\RoleManagementServer.class
+org\student\service\impl\RoleManagementServerImpl.class
+org\student\entity\RoleManagement.class
+org\student\appservice\impl\RoleManagementAppServiceImpl.class
+org\student\appservice\RoleManagementAppService.class
 org\student\controller\RoleManagementController.class
