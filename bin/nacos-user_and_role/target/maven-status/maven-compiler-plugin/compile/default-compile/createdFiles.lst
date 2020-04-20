@@ -1,6 +1,0 @@
-org\student\entity\userandrole.class
-org\student\service\UserAndRoleService.class
-org\student\dao\UserAndRoleDao.class
-org\student\NacosUserAndRoleApplication.class
-org\student\controller\UserAndRoleController.class
-org\student\mapper\UserAndRoleMapper.class
