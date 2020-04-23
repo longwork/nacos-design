@@ -31,9 +31,15 @@ public class UserManagementRemoteHystrix implements UserManagementRemoteClient {
     }
 
     @Override
-    public List<UserManagement> selectUserByFileNameAndValue(String fieldName, String fieldValue) {
+    public UserManagement selectUserByFieldNotBirth(String fieldName, String fieldValue) {
         return null;
     }
+
+    @Override
+    public List<UserManagement> selectUserByBirth(String fieldValue) {
+        return null;
+    }
+
 
     @SuppressWarnings("SpringMVCViewInspection")
     @Override

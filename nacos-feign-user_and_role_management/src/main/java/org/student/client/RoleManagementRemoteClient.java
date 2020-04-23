@@ -43,11 +43,11 @@ public interface RoleManagementRemoteClient {
     /**
      * 添加数据
      *
-     * @param role 要添加的角色
+     * @param roleManagement 要添加的角色
      * @return 返回结果字符串
      */
     @PostMapping("/insert-role")
-    String insertRole(@RequestBody RoleManagement role);
+    String insertRole(@RequestBody RoleManagement roleManagement);
 
     /**
      * 通过Id删除数据
@@ -72,10 +72,10 @@ public interface RoleManagementRemoteClient {
     /**
      * 修改角色
      *
-     * @param role 要修改的role
+     * @param roleManagement 要修改的role
      * @return 返回结果字符串
      */
     @PutMapping("/update-role-by-id")
-    String updateRoleById(@RequestBody RoleManagement role);
+    String updateRoleById(@RequestBody RoleManagement roleManagement);
 
 }

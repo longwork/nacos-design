@@ -18,8 +18,10 @@ import lombok.NoArgsConstructor;
 public class UserAndRole {
     @TableId(type = IdType.AUTO)
     private Integer id;
+
     @TableField("userid")
     private Integer userId;
+
     @TableField("roleid")
     private Integer roleId;
 

@@ -2,7 +2,6 @@ package org.student.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
-import org.student.dto.FieldCollection;
 import org.student.dto.UserAndRoleAddEncapsulation;
 import org.student.entity.UserAndRole;
 
@@ -44,11 +43,11 @@ public interface UserAndRoleRemoteClient {
     /**
      * 插入数据
      *
-     * @param ur 想要插入的UserAndRole
+     * @param userAndRoleAddEncapsulation 想要插入的UserAndRole
      * @return 返回结果字符串
      */
     @PostMapping("/insert-user-role")
-    String insertUserRole(@RequestBody UserAndRoleAddEncapsulation ur);
+    String insertUserRole(@RequestBody UserAndRoleAddEncapsulation userAndRoleAddEncapsulation);
 
     /**
      * 通过ID删除数据
@@ -62,19 +61,21 @@ public interface UserAndRoleRemoteClient {
     /**
      * 通过fieldName和fieldValue删除数据
      *
-     * @param fieldCollections 传入要删除的结果集
+     * @param fieldName  字段名
+     * @param fieldValue 字段值
      * @return 返回结果字符串
      */
     @DeleteMapping("/delete-user-role-by-fieldname-and-fieldvalue")
-    String deleteUserRoleByFieldNameAndValue(@RequestBody FieldCollection fieldCollections);
+    String deleteUserRoleByFieldNameAndValue(@RequestParam("fieldName") String fieldName,
+                                             @RequestParam("fieldValue") Integer fieldValue);
 
     /**
      * 通过Id修改数据
      *
-     * @param ur 要更新的UserAndRole
+     * @param userAndRole 要更新的UserAndRole
      * @return 返回结果字符串
      */
     @PutMapping("/update-user-role")
-    String updateUserRole(@RequestBody UserAndRole ur);
+    String updateUserRole(@RequestBody UserAndRole userAndRole);
 
 }

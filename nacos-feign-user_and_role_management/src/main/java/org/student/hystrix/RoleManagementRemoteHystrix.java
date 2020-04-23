@@ -28,7 +28,7 @@ public class RoleManagementRemoteHystrix implements RoleManagementRemoteClient {
     }
 
     @Override
-    public String insertRole(RoleManagement role) {
+    public String insertRole(RoleManagement roleManagement) {
         return null;
     }
 
@@ -43,7 +43,7 @@ public class RoleManagementRemoteHystrix implements RoleManagementRemoteClient {
     }
 
     @Override
-    public String updateRoleById(RoleManagement role) {
+    public String updateRoleById(RoleManagement roleManagement) {
         return null;
     }
 }

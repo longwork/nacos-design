@@ -4,66 +4,67 @@ import org.student.dto.RoleAddEncapsulation;
 import org.student.dto.RoleUpdateEncapsulation;
 import org.student.entity.RoleManagement;
 
+import java.util.List;
+
 /**
  * @author Long
  * @date 15:07 2020-04-20 周一
  */
 public interface RoleManagementAppService {
     /**
-     * 将前端传来的dto类转换为实体类
+     * 查询所有的RoleManagement
      *
-     * @param role 插入的RoleAddEncapsulation实体类
-     * @return 返回的RoleManagement
+     * @return List集合，里面为所有的RoleManagement
      */
-    RoleManagement entityTransaction(RoleAddEncapsulation role);
+    List<RoleManagement> selectAllRoleList();
 
     /**
-     * 将前端传来的dto类转换为实体类
+     * 通过ID查询
      *
-     * @param role 修改的RoleAddEncapsulation实体类
-     * @return 返回的RoleManagement
+     * @param id 传入的id
+     * @return 返回通过id查询的RoleManagement
      */
-    RoleManagement entityTransaction(RoleUpdateEncapsulation role);
+    RoleManagement selectRoleById(Integer id);
 
     /**
-     * 检测传入的字符串是否为用户名(不是以特殊字符开头)
+     * 通过FieldName和FieldValue值来查询
      *
-     * @param roleName 传入的用户名
-     * @return true代表传入的是用户名, false代表传入的不是用户名
+     * @param fieldName  字段名
+     * @param fieldValue 字段值
+     * @return 返回通过FieldName和FieldValue值查询的RoleManagement
      */
-    boolean roleNameDetection(String roleName);
+    RoleManagement selectRoleByFieldNameAndValue(String fieldName, String fieldValue);
 
     /**
-     * 检测用户名是否存在
+     * 插入数据
      *
-     * @param name 传入的Name
-     * @return true为数据库存在这个值，false代表数据库中没有这个值
+     * @param roleAddEncapsulation 想要插入的Role
+     * @return 返回结果字符串
      */
-    boolean roleNameRepetition(String name);
+    String insertRole(RoleAddEncapsulation roleAddEncapsulation);
 
     /**
-     * 检测描述重复
+     * 通过ID删除数据
      *
-     * @param roleDescribe 传入的roleDescribe
-     * @return true为数据库存在这个值，false代表数据库中没有这个值
+     * @param id 传入的主键ID
+     * @return 返回结果字符串
      */
-    boolean roleDescribeRepetition(String roleDescribe);
+    String deleteRole(Integer id);
 
     /**
-     * 检测属性合格
+     * 通过fieldName和fieldValue删除数据
      *
-     * @param role 传入的RoleManagement
-     * @return 返回不符合的语句
+     * @param fieldName  字段值
+     * @param fieldValue 字段名
+     * @return 返回结果字符串
      */
-    String detection(RoleManagement role);
+    String deleteRoleByFieldNameAndValue(String fieldName, String fieldValue);
 
     /**
-     * 检测修改数据是否合格
+     * 通过Id修改数据
      *
-     * @param id           传入的id
-     * @param roleName     传入的roleName
-     * @param roleDescribe 传入的roleDescribe
-     * @return 返回不符合的语句
+     * @param roleUpdateEncapsulation 要更新的Role
+     * @return 返回结果字符串
      */
-    String updateDetection(Integer id, String roleName, String roleDescribe);
+    String updateRoleById(RoleUpdateEncapsulation roleUpdateEncapsulation);
 }

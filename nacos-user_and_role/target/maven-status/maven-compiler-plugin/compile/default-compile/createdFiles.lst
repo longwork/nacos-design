@@ -5,6 +5,6 @@ org\student\appservice\UserAndRoleAppService.class
 org\student\dto\UserAndRoleAddEncapsulation.class
 org\student\NacosUserAndRoleApplication.class
 org\student\controller\UserAndRoleController.class
-org\student\dto\FieldCollection.class
 org\student\mapper\UserAndRoleMapper.class
 org\student\entity\UserAndRole.class
+org\student\dto\UserAndRoleUpdateEncapsulation.class

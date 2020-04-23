@@ -1,16 +1,17 @@
 package org.student.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.student.appservice.UserManagementAppService;
+import org.student.dto.PageSelect;
 import org.student.dto.UserAddEncapsulation;
 import org.student.dto.UserUpdateEncapsulation;
 import org.student.entity.UserManagement;
-import org.student.service.UserManagementService;
 
-import javax.annotation.Resource;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,9 +22,10 @@ import java.util.Optional;
  * @author Administrator
  */
 @RestController
+@AllArgsConstructor
 public class UserManagementController {
-    @Value("${nacos.config}")
-    private String config;
+
+    private final UserManagementAppService userManagementAppService;
 
     /**
      * 测试
@@ -31,7 +33,7 @@ public class UserManagementController {
      * @return config对应的值(在NacosConfig命名空间中的值)
      */
     @GetMapping("/config")
-    public String getConfig() {
+    public String getConfig(@Value("${nacos.config") String config) {
         return config;
     }
 
@@ -44,12 +46,6 @@ public class UserManagementController {
     public String helloNacos() {
         return "hello";
     }
-
-    @Resource
-    UserManagementService userService;
-
-    @Resource
-    UserManagementAppService uAppService;
 
     /**
      * 在初始化的时候给传入的String类型转化为Date类型
@@ -69,7 +65,7 @@ public class UserManagementController {
      */
     @GetMapping("/select-all-user-list")
     public List<UserManagement> selectAllUserList() {
-        return userService.selectAllUserList();
+        return userManagementAppService.selectAllUserList();
     }
 
     /**
@@ -84,7 +80,7 @@ public class UserManagementController {
     public List<UserManagement> selectUserByConditionList(@RequestParam("b1") String birth1,
                                                           @RequestParam("b2") String birth2,
                                                           @RequestParam("c") String condition) {
-        return userService.selectUserByConditionList(birth1, birth2, condition);
+        return userManagementAppService.selectUserByConditionList(birth1, birth2, condition);
     }
 
     /**
@@ -95,7 +91,7 @@ public class UserManagementController {
      */
     @GetMapping("/select-user-by-id")
     public UserManagement selectUserById(@RequestParam("id") Integer id) {
-        return Optional.ofNullable(userService.selectUserById(id)).orElse(new UserManagement());
+        return Optional.ofNullable(userManagementAppService.selectUserById(id)).orElse(new UserManagement());
     }
 
     /**
@@ -105,22 +101,32 @@ public class UserManagementController {
      * @param fieldValue 传入的字段值
      * @return 返回通过FieldName和FieldValue值查询的UserManagement
      */
-    @GetMapping("/select-user-by-fieldname-and-fieldvalue")
-    public List<UserManagement> selectUserByFileNameAndValue(@RequestParam("fieldName") String fieldName,
-                                                             @RequestParam("fieldValue") String fieldValue) {
-        return userService.selectUserByFileNameAndValue(fieldName, fieldValue);
+    @GetMapping("/select-user-by-field-not-birth")
+    public UserManagement selectUserByFieldNotBirth(@RequestParam("fieldName") String fieldName,
+                                                    @RequestParam("fieldValue") String fieldValue) {
+        return userManagementAppService.selectUserByFieldNotBirth(fieldName, fieldValue);
+    }
+
+    /**
+     * 通过生日对应的值来查询
+     *
+     * @param fieldValue 字段值
+     * @return 查询的对应的用户
+     */
+    @GetMapping("/select-user-by-birth")
+    public List<UserManagement> selectUserByBirth(@RequestParam("fieldValue") String fieldValue) {
+        return userManagementAppService.selectUserByBirth(fieldValue);
     }
 
     /**
      * 插入数据
      *
-     * @param u 传入的封装好的UserManagement
+     * @param userAddEncapsulation 传入前台封装过的UserAddEncapsulation
      * @return 插入的结果
      */
     @PostMapping("/insert-user")
-    public String insertUser(@RequestBody UserAddEncapsulation u) {
-        UserManagement user = uAppService.entityTransaction(u);
-        return userService.insertUser(user);
+    public String insertUser(@RequestBody UserAddEncapsulation userAddEncapsulation) {
+        return userManagementAppService.insertUser(userAddEncapsulation);
     }
 
     /**
@@ -131,7 +137,7 @@ public class UserManagementController {
      */
     @DeleteMapping("/delete-user-by-id")
     public String deleteUserById(@RequestParam("id") Integer id) {
-        return userService.deleteUserById(id);
+        return userManagementAppService.deleteUserById(id);
     }
 
     /**
@@ -144,18 +150,22 @@ public class UserManagementController {
     @DeleteMapping("/delete-user-by-fieldname-and-fieldvalue")
     public String deleteUserByFieldNameAndValue(@RequestParam("fieldName") String fieldName,
                                                 @RequestParam("fieldValue") String fieldValue) {
-        return userService.deleteUserByFieldNameAndValue(fieldName, fieldValue);
+        return userManagementAppService.deleteUserByFieldNameAndValue(fieldName, fieldValue);
     }
 
     /**
      * 通过Id修改数据
      *
-     * @param u 传入的封装好的UserManagement
+     * @param userUpdateEncapsulation 传入的封装好的UserManagement
      * @return 修改的结果
      */
     @PutMapping("/update-user-by-id")
-    public String updateUserById(@RequestBody UserUpdateEncapsulation u) {
-        UserManagement user = uAppService.entityTransaction(u);
-        return userService.updateUserById(user);
+    public String updateUserById(@RequestBody UserUpdateEncapsulation userUpdateEncapsulation) {
+        return userManagementAppService.updateUserById(userUpdateEncapsulation);
+    }
+
+    @GetMapping("/select-page")
+    public IPage<UserManagement> selectUserPage(@RequestBody PageSelect pages) {
+        return userManagementAppService.selectPage(pages);
     }
 }

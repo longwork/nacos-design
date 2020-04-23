@@ -1,114 +1,99 @@
 package org.student.appservice;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.student.dto.PageSelect;
 import org.student.dto.UserAddEncapsulation;
 import org.student.dto.UserUpdateEncapsulation;
 import org.student.entity.UserManagement;
 
-import java.time.LocalDate;
-import java.util.Date;
+import java.util.List;
 
 /**
  * @author Long
  * @date 14:15 2020-04-20 周一
  */
 public interface UserManagementAppService {
-    /**
-     * 将前端传来的dto类转换为entity实体类
-     *
-     * @param user 传入要修改的user
-     * @return 返回一个转换的entity实体类
-     */
-    UserManagement entityTransaction(UserUpdateEncapsulation user);
 
     /**
-     * 将前端传来的dto类转换为entity实体类
+     * 查询全部的UserManagement
      *
-     * @param user 传入要插入的user
-     * @return 返回一个转换的entity实体类
+     * @return List集合，里面为所有的UserManagement
      */
-    UserManagement entityTransaction(UserAddEncapsulation user);
+    List<UserManagement> selectAllUserList();
 
     /**
-     * 检测传入的字符串是否为用户名(不是以特殊字符开头)
+     * 通过传入的条件查询
      *
-     * @param name 传入的用户名
-     * @return true代表传入的是用户名, false代表传入的不是用户名
+     * @param birth1    第一个生日，用String类型传入数据库(条件1)
+     * @param birth2    第二个生日，用String类型传入数据库(条件2)
+     * @param condition 需要满足的条件(条件3)
+     * @return List集合，返回所有满足条件的
      */
-    boolean nameDetection(String name);
+    List<UserManagement> selectUserByConditionList(String birth1, String birth2, String condition);
 
     /**
-     * 检测传入的Name重复
+     * 通过ID查询
      *
-     * @param name 传入的Name
-     * @return true为数据库没有这个值，false代表数据库中存在这个值
+     * @param id 传入的id
+     * @return 返回通过id查询的UserManagement
      */
-    boolean nameRepetition(String name);
+    UserManagement selectUserById(Integer id);
 
     /**
-     * 检测传入的字符串是否为邮箱
+     * 通过除了生日的其他字段名和字段值查询
      *
-     * @param email 传入的字符串
-     * @return true代表传入的是邮箱, false代表传入的不是邮箱
+     * @param fieldName  字段名
+     * @param fieldValue 字段值
+     * @return 查询到的用户
      */
-    boolean emailDetection(String email);
+    UserManagement selectUserByFieldNotBirth(String fieldName, String fieldValue);
 
     /**
-     * 检测邮箱重复
+     * 通过birth值来查询
      *
-     * @param email 传入的邮箱
-     * @return true代表重复，false不重复
+     * @param fieldValue 字段值
+     * @return 返回通过FieldName和FieldValue值查询的UserManagement
      */
-    boolean emailRepetition(String email);
+    List<UserManagement> selectUserByBirth(String fieldValue);
 
     /**
-     * 检测传入的字符串是否为手机号码
+     * 插入数据
      *
-     * @param phone 传入的手机号
-     * @return true代表传入的是手机号, false代表传入的不是手机号
+     * @param userAddEncapsulation 想要插入的User
+     * @return 返回结果的字符串
      */
-    boolean phoneDetection(String phone);
+    String insertUser(UserAddEncapsulation userAddEncapsulation);
 
     /**
-     * 检测手机号重复
+     * 通过ID删除数据
      *
-     * @param phone 传入的手机号
-     * @return true代表重复，false不重复
+     * @param id 传入的主键ID
+     * @return 返回结果的字符串
      */
-    boolean phoneRepetition(String phone);
+    String deleteUserById(Integer id);
 
     /**
-     * 判断传入的字符串转化为时间之后是否是在当前时间之前
+     * 通过FieldName和FieldValue删除数据
      *
-     * @param localDate 传入的生日
-     * @return 是不是在当前时间之前
+     * @param fieldName  字段值
+     * @param fieldValue 字段名
+     * @return 返回结果的字符串
      */
-    boolean birthDetection(LocalDate localDate);
+    String deleteUserByFieldNameAndValue(String fieldName, String fieldValue);
 
     /**
-     * 将Date类型转化为LocalDate类型
+     * 通过Id修改数据
      *
-     * @param date 传入的生日
-     * @return 返回一个LocalDate类型的生日
+     * @param userUpdateEncapsulation 要更新的User
+     * @return 返回结果的字符串
      */
-    LocalDate dateTimeFormat(Date date);
+    String updateUserById(UserUpdateEncapsulation userUpdateEncapsulation);
 
     /**
-     * 检测数据是否合格
+     * 查询：根据state状态查询用户列表，分页显式
      *
-     * @param u 要插入的UserManagement
-     * @return 返回不符合的语句
+     * @param page 分页对象，xml中可以从里面进行取值,传递参数 Page 即自动分页,必须放在第一位(你可以继承Page实现自己的分页对象)
+     * @return 分页对象
      */
-    String detection(UserManagement u);
-
-    /**
-     * 检测修改数据是否合格
-     *
-     * @param id        传入的id
-     * @param name      传入的name
-     * @param email     传入的email
-     * @param phone     传入的phone
-     * @param localDate 传入的localDate
-     * @return 返回不符合的语句
-     */
-    String updateDetection(Integer id, String name, String email, String phone, LocalDate localDate);
+    IPage<UserManagement> selectPage(PageSelect page);
 }

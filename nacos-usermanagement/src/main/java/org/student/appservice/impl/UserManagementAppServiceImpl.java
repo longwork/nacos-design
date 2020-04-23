@@ -1,165 +1,228 @@
 package org.student.appservice.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.student.appservice.UserManagementAppService;
+import org.student.dto.PageSelect;
 import org.student.dto.UserAddEncapsulation;
 import org.student.dto.UserUpdateEncapsulation;
 import org.student.entity.UserManagement;
 import org.student.service.UserManagementService;
 
-import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
 
 /**
  * @author Long
  * @date 14:15 2020-04-20 周一
  */
 @Service
+@AllArgsConstructor
 public class UserManagementAppServiceImpl implements UserManagementAppService {
 
     private static final int NAME_LENGTH = 20;
-    @Resource
-    UserManagementService uService;
+
+    private final UserManagementService userManagementService;
 
     @Override
-    public UserManagement entityTransaction(UserUpdateEncapsulation u) {
-        Integer id = u.getId();
-        String name = u.getName();
-        String email = u.getEmail();
-        String phone = u.getPhone();
-        Date date = u.getDate();
-        LocalDate localDate = dateTimeFormat(date);
-        return new UserManagement(id, name, email, phone, localDate);
+    public List<UserManagement> selectAllUserList() {
+        return userManagementService.list();
     }
 
     @Override
-    public UserManagement entityTransaction(UserAddEncapsulation u) {
-        String name = u.getName();
-        String email = u.getEmail();
-        String phone = u.getPhone();
-        Date date = u.getDate();
+    public List<UserManagement> selectUserByConditionList(String birth1, String birth2, String condition) {
+        Wrapper<UserManagement> query = new QueryWrapper<UserManagement>()
+                .between("birth", birth1, birth2)
+                .and(i -> i.like("name", condition)
+                        .or().like("email", condition)
+                        .or().like("phone", condition)
+                );
+        return userManagementService.list(query);
+    }
+
+    @Override
+    public UserManagement selectUserById(Integer id) {
+        return userManagementService.getById(id);
+    }
+
+    @Override
+    public UserManagement selectUserByFieldNotBirth(String fieldName, String fieldValue) {
+        Wrapper<UserManagement> query = new QueryWrapper<UserManagement>().eq(fieldName, fieldValue);
+        return userManagementService.getOne(query);
+    }
+
+    @Override
+    public List<UserManagement> selectUserByBirth(String fieldValue) {
+        Wrapper<UserManagement> query = new QueryWrapper<UserManagement>().eq("birth", fieldValue);
+        return userManagementService.list(query);
+    }
+
+    @Override
+    public String insertUser(UserAddEncapsulation userAddEncapsulation) {
+        UserManagement userManagement = addUserDtoToUserManagement(userAddEncapsulation);
+        String detection = detection(userManagement);
+        if (detection != null) {
+            return detection;
+        }
+        return userManagementService.save(userManagement) ? "插入成功,对应的id" + userManagement.getId() : "插入失败";
+    }
+
+    @Override
+    public String deleteUserById(Integer id) {
+        return userManagementService.removeById(id) ? "删除成功" : "删除失败";
+    }
+
+    @Override
+    public String deleteUserByFieldNameAndValue(String fieldName, String fieldValue) {
+        Map<String, Object> map = new HashMap<>(1);
+        map.put(fieldName, fieldValue);
+        return userManagementService.removeByMap(map) ? "删除成功" : "删除失败";
+    }
+
+    @Override
+    public String updateUserById(UserUpdateEncapsulation userUpdateEncapsulation) {
+        UserManagement userManagement = updateUserDtoToUserManagement(userUpdateEncapsulation);
+        Integer id = userManagement.getId();
+        if (selectUserById(id) == null) {
+            return "数据不存在，修改失败";
+        } else {
+            String updateDetection = updateDetection(userManagement);
+            if (updateDetection != null) {
+                return updateDetection;
+            }
+            return userManagementService.updateById(userManagement) ? "修改成功" : "修改失败";
+        }
+    }
+
+    @Override
+    public IPage<UserManagement> selectPage(PageSelect pages) {
+        Long current = pages.getCurrent();
+        Long size = pages.getSize();
+        Page<UserManagement> page = new Page<>(current, size);
+        return userManagementService.page(page);
+    }
+
+    /**
+     * 将前端传来的dto类转换为entity实体类
+     *
+     * @param userAddEncapsulation 传入要插入的user
+     * @return 返回一个转换的entity实体类
+     */
+    private UserManagement addUserDtoToUserManagement(UserAddEncapsulation userAddEncapsulation) {
+        String name = userAddEncapsulation.getName();
+        String email = userAddEncapsulation.getEmail();
+        String phone = userAddEncapsulation.getPhone();
+        Date date = userAddEncapsulation.getDate();
         LocalDate localDate = dateTimeFormat(date);
         return new UserManagement(name, email, phone, localDate);
     }
 
-    @Override
-    public boolean nameDetection(String name) {
-        String pattern = "[A-Za-z0-9_\\-\\u4e00-\\u9fa5]+";
-        Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(name);
-        return !m.matches();
+    /**
+     * 将前端传来的dto类转换为entity实体类
+     *
+     * @param userUpdateEncapsulation 传入要修改的user
+     * @return 返回一个转换的entity实体类
+     */
+    private UserManagement updateUserDtoToUserManagement(UserUpdateEncapsulation userUpdateEncapsulation) {
+        Integer id = userUpdateEncapsulation.getId();
+        String name = userUpdateEncapsulation.getName();
+        String email = userUpdateEncapsulation.getEmail();
+        String phone = userUpdateEncapsulation.getPhone();
+        Date date = userUpdateEncapsulation.getDate();
+        LocalDate localDate = dateTimeFormat(date);
+        return new UserManagement(id, name, email, phone, localDate);
     }
 
-    @Override
-    public boolean nameRepetition(String name) {
-        List<UserManagement> userManagement = uService.selectUserByFileNameAndValue("name", name);
-        return !userManagement.isEmpty();
-    }
-
-
-    @Override
-    public boolean emailDetection(String email) {
-        String pattern = "\\w[-\\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\\.)+[A-Za-z]{2,14}";
-        Pattern p = Pattern.compile(pattern);
-        Matcher m = p.matcher(email);
-        return !m.matches();
-    }
-
-    @Override
-    public boolean emailRepetition(String email) {
-        List<UserManagement> userManagement = uService.selectUserByFileNameAndValue("email", email);
-        return !userManagement.isEmpty();
-    }
-
-    @Override
-    public boolean phoneDetection(String phone) {
-        String pattern = "0?(13|14|15|18|17)[0-9]{9}";
-        Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(phone);
-        return !m.matches();
-    }
-
-    @Override
-    public boolean phoneRepetition(String phone) {
-        List<UserManagement> userManagement = uService.selectUserByFileNameAndValue("phone", phone);
-        return !userManagement.isEmpty();
-    }
-
-    @Override
-    public boolean birthDetection(LocalDate ldt) {
-        LocalDate localDate = LocalDate.now();
-        int compare = localDate.compareTo(ldt);
-        return compare <= 0;
-    }
-
-    @Override
-    public LocalDate dateTimeFormat(Date date) {
+    /**
+     * 将Date类型转化为LocalDate类型
+     *
+     * @param date 传入的生日
+     * @return 返回一个LocalDate类型的生日
+     */
+    private LocalDate dateTimeFormat(Date date) {
         return date.toInstant().atZone(ZoneOffset.ofHours(8)).toLocalDate();
     }
 
-    @Override
-    public String detection(UserManagement u) {
-        String name = u.getName();
-        String email = u.getEmail();
-        String phone = u.getPhone();
-        LocalDate localDate = u.getBirth();
-        if (nameDetection(name)) {
+    /**
+     * 检测数据是否合格
+     *
+     * @param userManagement 要插入的UserManagement
+     * @return 返回不符合的语句
+     */
+    private String detection(UserManagement userManagement) {
+        String name = userManagement.getName();
+        String email = userManagement.getEmail();
+        String phone = userManagement.getPhone();
+        if (userManagement.nameDetection()) {
             return "姓名格式不能用特殊符号开头";
         }
         if (name.length() > NAME_LENGTH) {
             return "姓名长度太长";
         }
-        if (nameRepetition(name)) {
+        if (userManagementService.nameRepetition(name)) {
             return "姓名已存在";
         }
-        if (emailDetection(email)) {
+        if (userManagement.emailDetection()) {
             return "邮箱格式不对";
         }
-        if (emailRepetition(email)) {
+        if (userManagementService.emailRepetition(email)) {
             return "邮箱已存在";
         }
-        if (phoneDetection(phone)) {
+        if (userManagement.phoneDetection()) {
             return "手机号码格式不对";
         }
-        if (phoneRepetition(phone)) {
+        if (userManagementService.phoneRepetition(phone)) {
             return "手机号码重复";
         }
-        if (birthDetection(localDate)) {
+        if (userManagement.birthDetection()) {
             return "输入的生日超过当前时间";
         }
         return null;
     }
 
-    @Override
-    public String updateDetection(Integer id, String name, String email, String phone, LocalDate localDate) {
-        UserManagement u = uService.selectUserById(id);
+    /**
+     * 检测修改数据是否合格
+     *
+     * @param userManagement 要修改的UserManagement
+     * @return 返回不符合的语句
+     */
+    private String updateDetection(UserManagement userManagement) {
+        Integer id = userManagement.getId();
+        String name = userManagement.getName();
+        String email = userManagement.getEmail();
+        String phone = userManagement.getPhone();
+        UserManagement u = userManagementService.getById(id);
+
         if (name.length() > NAME_LENGTH) {
             return "姓名长度太长";
         }
-        if (nameDetection(name)) {
+        if (u.nameDetection()) {
             return "姓名格式不能用特殊符号开头";
         }
-        if (nameRepetition(name) && !name.equals(u.getName())) {
+        if (userManagementService.nameRepetition(name) && !name.equals(u.getName())) {
             return "姓名已存在";
         }
-        if (emailDetection(email)) {
+        if (u.emailDetection()) {
             return "邮箱格式不对";
         }
-        if (emailRepetition(email) && !email.equals(u.getEmail())) {
+        if (userManagementService.emailRepetition(email) && !email.equals(u.getEmail())) {
             return "邮箱已存在";
         }
-        if (phoneDetection(phone)) {
+        if (u.phoneDetection()) {
             return "手机号码格式不对";
         }
-        if (phoneRepetition(phone) && !phone.equals(u.getPhone())) {
+        if (userManagementService.phoneRepetition(phone) && !phone.equals(u.getPhone())) {
             return "手机号码重复";
         }
-        if (birthDetection(localDate)) {
+        if (u.birthDetection()) {
             return "输入的生日超过当前时间";
         }
         return null;

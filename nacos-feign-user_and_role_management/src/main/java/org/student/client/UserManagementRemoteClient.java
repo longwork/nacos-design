@@ -5,13 +5,14 @@ import org.springframework.web.bind.annotation.*;
 import org.student.dto.UserAddEncapsulation;
 import org.student.dto.UserUpdateEncapsulation;
 import org.student.entity.UserManagement;
+import org.student.hystrix.UserManagementRemoteHystrix;
 
 import java.util.List;
 
 /**
  * @author Administrator
  */
-@FeignClient(name = "nacos-userManagement")
+@FeignClient(name = "nacos-userManagement", fallback = UserManagementRemoteHystrix.class)
 public interface UserManagementRemoteClient {
 
     /**
@@ -51,18 +52,27 @@ public interface UserManagementRemoteClient {
      * @param fieldValue 传入的字段值
      * @return 返回通过FieldName和FieldValue值查询的UserManagement
      */
-    @GetMapping("/select-user-by-fieldname-and-fieldvalue")
-    List<UserManagement> selectUserByFileNameAndValue(@RequestParam("fieldName") String fieldName,
-                                                      @RequestParam("fieldValue") String fieldValue);
+    @GetMapping("/select-user-by-field-not-birth")
+    UserManagement selectUserByFieldNotBirth(@RequestParam("fieldName") String fieldName,
+                                             @RequestParam("fieldValue") String fieldValue);
+
+    /**
+     * 通过FieldName和FieldValue值来查询
+     *
+     * @param fieldValue 传入的字段值
+     * @return 返回通过FieldName和FieldValue值查询的UserManagement
+     */
+    @GetMapping("/select-user-by-birth")
+    List<UserManagement> selectUserByBirth(@RequestParam("fieldValue") String fieldValue);
 
     /**
      * 插入数据
      *
-     * @param u 传入的封装好的UserManagement
+     * @param userAddEncapsulation 传入的封装好的UserManagement
      * @return 插入的结果
      */
     @PostMapping("/insert-user")
-    String insertUser(@RequestBody UserAddEncapsulation u);
+    String insertUser(@RequestBody UserAddEncapsulation userAddEncapsulation);
 
     /**
      * 通过ID删除数据
@@ -87,10 +97,10 @@ public interface UserManagementRemoteClient {
     /**
      * 通过Id修改数据
      *
-     * @param u 传入的封装好的UserManagement
+     * @param userUpdateEncapsulation 传入的封装好的UserManagement
      * @return 修改的结果
      */
     @PutMapping("/update-user-by-id")
-    String updateUserById(@RequestBody UserUpdateEncapsulation u);
+    String updateUserById(@RequestBody UserUpdateEncapsulation userUpdateEncapsulation);
 
 }

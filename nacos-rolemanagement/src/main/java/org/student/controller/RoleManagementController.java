@@ -1,23 +1,22 @@
 package org.student.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.student.appservice.RoleManagementAppService;
 import org.student.dto.RoleAddEncapsulation;
 import org.student.dto.RoleUpdateEncapsulation;
 import org.student.entity.RoleManagement;
-import org.student.service.RoleManagementService;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * @author Administrator
  */
 @RestController
+@AllArgsConstructor
 public class RoleManagementController {
-    @Value("${nacos.config}")
-    String config;
+    private final RoleManagementAppService roleManagementAppService;
 
     /**
      * 测试config
@@ -25,15 +24,9 @@ public class RoleManagementController {
      * @return config对应的命名空间中的值
      */
     @GetMapping("/config")
-    public String getConfig() {
+    public String getConfig(@Value("${nacos.config}") String config) {
         return config;
     }
-
-    @Resource
-    RoleManagementService roleService;
-
-    @Resource
-    RoleManagementAppService roleAppService;
 
     /**
      * 查询所有的role角色
@@ -42,7 +35,7 @@ public class RoleManagementController {
      */
     @GetMapping("/select-all-role-list")
     public List<RoleManagement> selectAllRoleList() {
-        return roleService.selectAllRoleList();
+        return roleManagementAppService.selectAllRoleList();
     }
 
     /**
@@ -53,7 +46,7 @@ public class RoleManagementController {
      */
     @GetMapping("/select-role-by-id")
     public RoleManagement selectRoleById(@RequestParam("id") Integer id) {
-        return roleService.selectRoleById(id);
+        return roleManagementAppService.selectRoleById(id);
     }
 
     /**
@@ -66,19 +59,18 @@ public class RoleManagementController {
     @GetMapping("/select-role-by-fieldname-and-fieldvalue")
     public RoleManagement selectRoleByFieldNameAndValue(@RequestParam("fieldName") String fieldName,
                                                         @RequestParam("fieldValue") String fieldValue) {
-        return roleService.selectRoleByFieldNameAndValue(fieldName, fieldValue);
+        return roleManagementAppService.selectRoleByFieldNameAndValue(fieldName, fieldValue);
     }
 
     /**
      * 添加数据
      *
-     * @param role 要添加的角色
+     * @param roleAddEncapsulation 要添加的角色
      * @return 是否成功
      */
     @PostMapping("/insert-role")
-    public String insertRole(@RequestBody RoleAddEncapsulation role) {
-        RoleManagement roleManagement = roleAppService.entityTransaction(role);
-        return roleService.insertRole(roleManagement);
+    public String insertRole(@RequestBody RoleAddEncapsulation roleAddEncapsulation) {
+        return roleManagementAppService.insertRole(roleAddEncapsulation);
     }
 
     /**
@@ -89,7 +81,7 @@ public class RoleManagementController {
      */
     @DeleteMapping("/delete-role")
     public String deleteRole(@RequestParam("id") Integer id) {
-        return roleService.deleteRole(id);
+        return roleManagementAppService.deleteRole(id);
     }
 
     /**
@@ -102,19 +94,18 @@ public class RoleManagementController {
     @DeleteMapping("/delete-role-by-fieldname-and-fieldvalue")
     public String deleteRoleByFieldNameAndValue(@RequestParam("fieldName") String fieldName,
                                                 @RequestParam("fieldValue") String fieldValue) {
-        return roleService.deleteRoleByFieldNameAndValue(fieldName, fieldValue);
+        return roleManagementAppService.deleteRoleByFieldNameAndValue(fieldName, fieldValue);
     }
 
     /**
      * 修改角色
      *
-     * @param role 要修改的role
+     * @param roleUpdateEncapsulation 要修改的role
      * @return 修改之后的描述
      */
     @PutMapping("/update-role-by-id")
-    public String updateRoleById(@RequestBody RoleUpdateEncapsulation role) {
-        RoleManagement roleManagement = roleAppService.entityTransaction(role);
-        return roleService.updateRoleById(roleManagement);
+    public String updateRoleById(@RequestBody RoleUpdateEncapsulation roleUpdateEncapsulation) {
+        return roleManagementAppService.updateRoleById(roleUpdateEncapsulation);
     }
 
 }

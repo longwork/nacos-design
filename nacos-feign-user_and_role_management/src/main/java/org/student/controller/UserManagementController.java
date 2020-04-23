@@ -3,13 +3,14 @@ package org.student.controller;
 import org.springframework.web.bind.annotation.*;
 import org.student.client.UserAndRoleRemoteClient;
 import org.student.client.UserManagementRemoteClient;
-import org.student.dto.*;
+import org.student.dto.UserAddAndUpdate;
+import org.student.dto.UserAddEncapsulation;
+import org.student.dto.UserAndRoleAddEncapsulation;
+import org.student.dto.UserUpdateEncapsulation;
 import org.student.entity.UserAndRole;
 import org.student.entity.UserManagement;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -35,27 +36,33 @@ public class UserManagementController {
         return remoteClient.selectUserById(id);
     }
 
-    @GetMapping("/select-user-by-fieldname-and-fieldvalue")
-    public List<UserManagement> selectUserByFileNameAndValue(@RequestParam("fieldName") String fieldName,
-                                                             @RequestParam("fieldValue") String fieldValue) {
-        return remoteClient.selectUserByFileNameAndValue(fieldName, fieldValue);
+    @GetMapping("/select-user-by-field-not-birth")
+    public UserManagement selectUserByFieldNotBirth(@RequestParam("fieldName") String fieldName,
+                                                    @RequestParam("fieldValue") String fieldValue) {
+        return remoteClient.selectUserByFieldNotBirth(fieldName, fieldValue);
+    }
+
+    @GetMapping("/select-user-by-birth")
+    public List<UserManagement> selectUserByFileNameAndValue(@RequestParam("fieldValue") String fieldValue) {
+        return remoteClient.selectUserByBirth(fieldValue);
     }
 
     @PostMapping("/insert-user")
-    public String insertUser(@RequestBody UserAddAndUpdate u1) {
-        String name = u1.getName();
-        String email = u1.getEmail();
-        String phone = u1.getPhone();
-        Date date = u1.getDate();
+    public String insertUser(@RequestBody UserAddAndUpdate userAddAndUpdate) {
+        String name = userAddAndUpdate.getName();
+        String email = userAddAndUpdate.getEmail();
+        String phone = userAddAndUpdate.getPhone();
+        Date date = userAddAndUpdate.getDate();
 
-        UserAddEncapsulation u = new UserAddEncapsulation(name, email, phone, date);
-        String s1 = remoteClient.insertUser(u);
+        UserAddEncapsulation userAddEncapsulation = new UserAddEncapsulation(name, email, phone, date);
+        String s1 = remoteClient.insertUser(userAddEncapsulation);
 
-        List<Integer> roleIdList = u1.getRoleIdList();
+        List<Integer> roleIdList = userAddAndUpdate.getRoleIdList();
         StringBuilder s2 = new StringBuilder();
-        List<UserManagement> name1 = remoteClient.selectUserByFileNameAndValue("name", name);
+        UserManagement userManagement = remoteClient.selectUserByFieldNotBirth("name", name);
+
         for (Integer integer : roleIdList) {
-            UserAndRoleAddEncapsulation ur = new UserAndRoleAddEncapsulation(name1.get(0).getId(), integer);
+            UserAndRoleAddEncapsulation ur = new UserAndRoleAddEncapsulation(userManagement.getId(), integer);
             s2.append(urRemoteClient.insertUserRole(ur));
         }
         return "UserManagement表：" + s1 + "," + "关联表：" + s2;
@@ -64,26 +71,16 @@ public class UserManagementController {
     @DeleteMapping("/delete-user-by-id")
     public String deleteUserById(@RequestParam("id") Integer id) {
         String s1 = remoteClient.deleteUserById(id);
-        Collection<Integer> collection = new ArrayList<>();
-        collection.add(id);
-        FieldCollection fieldCollections = new FieldCollection("userId", collection);
-        String s = urRemoteClient.deleteUserRoleByFieldNameAndValue(fieldCollections);
+        String s = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId", id);
         return "UserManagement表：" + s1 + "," + "关联表" + s;
     }
 
     @DeleteMapping("/delete-user-by-fieldname-and-fieldvalue")
     public String deleteUserByFieldNameAndValue(@RequestParam("fieldName") String fieldName,
                                                 @RequestParam("fieldValue") String fieldValue) {
-        List<UserManagement> userManagements = remoteClient.selectUserByFileNameAndValue(fieldName, fieldValue);
-        if (userManagements.isEmpty()) {
-            return "数据库中不存在此字段值";
-        }
-        Collection<Integer> collections = new ArrayList<>();
-        for (UserManagement userManagement : userManagements) {
-            collections.add(userManagement.getId());
-        }
+        UserManagement userManagement = remoteClient.selectUserByFieldNotBirth(fieldName, fieldValue);
         String s1 = remoteClient.deleteUserByFieldNameAndValue(fieldName, fieldValue);
-        String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue(new FieldCollection("userId", collections));
+        String s2 = urRemoteClient.deleteUserRoleByFieldNameAndValue("userId",userManagement.getId());
         return "UserManagement表：" + s1 + "," + "关联表" + s2;
     }
 

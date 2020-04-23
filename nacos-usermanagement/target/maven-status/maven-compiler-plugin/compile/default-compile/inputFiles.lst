@@ -1,3 +1,4 @@
+D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-usermanagement\src\main\java\org\student\config\MyBatisPlusConfig.java
 D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-usermanagement\src\main\java\org\student\service\UserManagementService.java
 D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-usermanagement\src\main\java\org\student\controller\UserManagementController.java
 D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-usermanagement\src\main\java\org\student\dto\UserAddEncapsulation.java
@@ -6,5 +7,6 @@ D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-usermanagement\src\main\java
 D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-usermanagement\src\main\java\org\student\entity\UserManagement.java
 D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-usermanagement\src\main\java\org\student\dto\UserUpdateEncapsulation.java
 D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-usermanagement\src\main\java\org\student\appservice\impl\UserManagementAppServiceImpl.java
+D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-usermanagement\src\main\java\org\student\dto\PageSelect.java
 D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-usermanagement\src\main\java\org\student\NacosUsermanagementApplication.java
 D:\IDEA_Project\IDEA_SpringCloud\nacos-design\nacos-usermanagement\src\main\java\org\student\appservice\UserManagementAppService.java
